@@ -91,6 +91,8 @@ screen knz_git_dwnl_menu:
             hotspot (744, 401, 42, 42) action [Hide ('knz_git_dwnl_menu'), Jump("deleter")]
             hotspot (693, 339, 43, 41) action [Hide ('knz_git_dwnl_menu'), Jump("dwl_run_down")]
             hotspot (742, 339, 44, 41) action [Hide ('knz_git_dwnl_menu'), Jump("dwl_deleter")]
+            hotspot (694, 462, 41, 42) action [Hide ('knz_git_dwnl_menu'), Jump("fog_run_down")]
+            hotspot (744, 463, 42, 42) action [Hide ('knz_git_dwnl_menu'), Jump("fog_deleter")]
             hotspot (1776, 935, 115, 114) action [Hide ('knz_git_dwnl_menu'), Jump("restart_git")]
             hotspot (1636, 937, 114, 113) action Quit (confirm=False)
             
@@ -124,6 +126,19 @@ label dwl_deleter:
     $ renpy.show("git_es_del", layer='master')
     $ renpy.pause (5, hard=True)
     $ knz_git_mod_clean('git_dayswithlena_res.rpa', 'dayswithlena/')
+    
+    ### SOVENOK IN TH FOG ###
+    
+label fog_run_down:
+    $ renpy.show("git_es_dwnl", layer='master')
+    $ renpy.pause (5, hard=True)
+    $ knz_dnwl_mod_base('vkun_fog/','git_vkun_fog.rpyc','https://github.com/tsunderekun/es_gitmods/raw/master/git_vkun_fog.rpyc')
+    $ knz_dnwl_mod('VKUN_MOD.rpa', 'https://github.com/tsunderekun/es_gitmods/raw/master/VKUN_MOD.rpa')
+    
+label fog_deleter:
+    $ renpy.show("git_es_del", layer='master')
+    $ renpy.pause (5, hard=True)
+    $ knz_git_mod_clean('VKUN_MOD.rpa', 'vkun_fog/')
     
     ###MOD CHECKER###
     
