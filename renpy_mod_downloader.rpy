@@ -14,7 +14,7 @@ init 999 python:
     
 
 init python:
-
+    config.image_cache_size_mb = 1536
     def knz_dnwl_mod_base(mfolder, baserpyc, rpyclink):
 
         import urllib2, os, shutil
@@ -25,7 +25,6 @@ init python:
         
         os.mkdir(path)
         
-
         filedata = urllib2.urlopen(rpyclink)  
         datatowrite = filedata.read()
         
@@ -34,14 +33,11 @@ init python:
 
     def knz_dnwl_mod(baserpa, rpalink):
 
-        import urllib2, os
+        import os, wget
         destination = renpy.config.basedir + '/../../workshop/content/331470/1515489831/'
-        filedata = urllib2.urlopen(rpalink)  
-        datatowrite = filedata.read()
-
-        with open(destination + baserpa, 'wb') as f:  
-            f.write(datatowrite)
-        
+        s=rpalink
+        filename = wget.download(s)
+        os.rename(filename, destination + baserpa)
         
         try:
             file = open(destination + baserpa)
@@ -93,6 +89,8 @@ screen knz_git_dwnl_menu:
             hotspot (742, 339, 44, 41) action [Hide ('knz_git_dwnl_menu'), Jump("dwl_deleter")]
             hotspot (694, 462, 41, 42) action [Hide ('knz_git_dwnl_menu'), Jump("fog_run_down")]
             hotspot (744, 463, 42, 42) action [Hide ('knz_git_dwnl_menu'), Jump("fog_deleter")]
+            hotspot (694, 524, 41, 42) action [Hide ('knz_git_dwnl_menu'), Jump("ev_run_down")]
+            hotspot (745, 525, 41, 42) action [Hide ('knz_git_dwnl_menu'), Jump("ev_deleter")]
             hotspot (1776, 935, 115, 114) action [Hide ('knz_git_dwnl_menu'), Jump("restart_git")]
             hotspot (1636, 937, 114, 113) action Quit (confirm=False)
             
@@ -139,6 +137,19 @@ label fog_deleter:
     $ renpy.show("git_es_del", layer='master')
     $ renpy.pause (5, hard=True)
     $ knz_git_mod_clean('VKUN_MOD.rpa', 'vkun_fog/')
+    
+    
+    ### EVERLASTING VACATIONS ###
+label ev_run_down:
+    $ renpy.show("git_es_dwnl", layer='master')
+    $ renpy.pause (5, hard=True)
+    $ knz_dnwl_mod_base('git_vacations/','git_vacations_base.rpyc','https://master.dl.sourceforge.net/project/esmgl-mods/git_vacations_base.rpyc')
+    $ knz_dnwl_mod('git_vacations.rpa', 'https://master.dl.sourceforge.net/project/esmgl-mods/git_vacations.rpa')
+    
+label ev_deleter:
+    $ renpy.show("git_es_del", layer='master')
+    $ renpy.pause (5, hard=True)
+    $ knz_git_mod_clean('git_vacations.rpa', 'git_vacations/')
     
     ###MOD CHECKER###
     
