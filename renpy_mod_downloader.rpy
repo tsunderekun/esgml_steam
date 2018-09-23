@@ -22,7 +22,14 @@ init:
     
     ("Бесконечные Каникулы", "git_vacations_base.rpyc", "git_vacations.rpa", "git_vacations/", "https://master.dl.sourceforge.net/project/esmgl-mods/git_vacations_base.rpyc", "https://master.dl.sourceforge.net/project/esmgl-mods/git_vacations.rpa", git_destination),
     
-    ("Большая Ошибка", "git_bm_base.rpyc", "git_bm.rpa", "git_bm/", "https://gitlab.com/tsunderekun/esgml_mods/raw/master/git_bm/git_bm_base.rpyc", "https://gitlab.com/tsunderekun/esgml_mods/raw/master/git_bm/git_bm.rpa", git_destination)]
+    ("Большая Ошибка", "git_bm_base.rpyc", "git_bm.rpa", "git_bm/", "https://gitlab.com/tsunderekun/esgml_mods/raw/master/git_bm/git_bm_base.rpyc", "https://gitlab.com/tsunderekun/esgml_mods/raw/master/git_bm/git_bm.rpa", git_destination),
+    
+    ("Время Лета", "git_sumtime_base.rpyc", "git_sumtime.rpa", "git_sumtime/", "https://gitlab.com/tsunderekun/esgml_mods/raw/master/git_sumtime/git_sumtime_base.rpyc", "https://gitlab.com/tsunderekun/esgml_mods/raw/master/git_sumtime/git_sumtime.rpa", git_destination),
+    
+    ("История Лены", "git_lena_story_base.rpyc", "git_lena_story.rpa", "git_lena_story/", "https://github.com/tsunderekun/es_gitmods/raw/master/git_lena_story_base.rpyc", "https://github.com/tsunderekun/es_gitmods/raw/master/git_lena_story.rpa", git_destination),
+    
+    ("Лена. Альтернативная концовка", "git_lena_alternate_base.rpyc", "git_lena_alternate.rpa", "git_lena_alternate/", "https://github.com/tsunderekun/es_gitmods/raw/master/git_lena_alternate_base.rpyc", "https://github.com/tsunderekun/es_gitmods/raw/master/git_lena_alternate.rpa", git_destination),
+    ]
     
     $ mods["knz_dwnl_git"]=u"Everlasting Summer GitHub Mods Loader"
 
@@ -52,7 +59,7 @@ screen knz_git_dwnl_menu:
                 textbutton name xalign 0 xmaximum 0.9: #action:
                     style "esgml_mm"
                     text_style "esgml_mm"
-                hbox xpos 0.9 spacing 10:
+                hbox xpos 0.630 spacing 10:
                     
                     if os.path.isfile(destination + rpa_f):
                         add 'res/git_dwl_inactive.png' xalign 0.90
@@ -66,7 +73,7 @@ screen knz_git_dwnl_menu:
                         add 'res/git_del_inactive.png' xalign 0.91
                         
     hbox yalign 0.975 xalign 0.5 spacing 144:
-        textbutton 'Перезагрузка' action [Function (renpy.utter_restart)]:
+        textbutton 'NLT Modpack' action [OpenURL('steam://url/CommunityFilePage/847728687')]:
                     style "esgml_bb"
                     text_style "esgml_bb"
                     
