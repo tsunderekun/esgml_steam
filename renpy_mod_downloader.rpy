@@ -90,16 +90,7 @@ screen knz_git_dwnl_menu:
 init 999 python:
     config.archives.append('res_git') 
     
-label run_down:
-    $ renpy.show("git_es_dwnl", layer='master')
-    $ renpy.pause (5, hard=True)
-    $ knz_dnwl_mod_base(knz_rpyc_p, knz_rpyc_f, knz_rpyc_l)
-    $ knz_dnwl_mod(knz_rpa_f, knz_rpa_l)
-    
-label deleter:
-    $ renpy.show("git_es_del", layer='master')
-    $ renpy.pause (5, hard=True)
-    $ knz_git_mod_clean(rpa_f, rpyc_p)
+
     
 init python:
     import time
