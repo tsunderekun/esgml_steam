@@ -73,14 +73,20 @@ screen knz_git_dwnl_menu:
                         add 'res/git_del_inactive.png' xalign 0.91
                         
     hbox yalign 0.975 xalign 0.5 spacing 144:
-        textbutton 'NLT Modpack' action [OpenURL('steam://url/CommunityFilePage/847728687')]:
-                    style "esgml_bb"
-                    text_style "esgml_bb"
+        if 'NLT_tl' in globals():
+            textbutton 'NLT Modpack' action [Function(renpy.call_in_new_context, 'NLT_toolbox')]:
+                        style "esgml_bb"
+                        text_style "esgml_bb"
+        else:
+            textbutton 'NLT Modpack' action [OpenURL('steam://url/CommunityFilePage/847728687')]:
+                        style "esgml_bb"
+                        text_style "esgml_bb"
                     
         textbutton 'Главное меню' action [Return()]:
                     style "esgml_bb"
                     text_style "esgml_bb"
-                        
+        
+
         textbutton 'Выход' action [Quit (confirm=False)]:
                     style "esgml_bb"
                     text_style "esgml_bb"
@@ -93,6 +99,20 @@ init 999 python:
 
     
 init python:
+
+    def knz_get_data(rpyc_p, rpyc_f, rpyc_l, rpa_f, rpa_l):
+        global knz_rpyc_p
+        global knz_rpyc_f
+        global knz_rpyc_l
+        global knz_rpa_f
+        global knz_rpa_l
+        knz_rpyc_f = rpyc_f
+        knz_rpyc_l = rpyc_l
+        knz_rpyc_p = rpyc_p
+        knz_rpa_f = rpa_f
+        knz_rpa_l = rpa_l
+
+
     import time
     config.image_cache_size_mb = 1536
     def knz_dnwl_mod_base(mfolder, baserpyc, rpyclink):
@@ -134,35 +154,44 @@ init python:
                 renpy.utter_restart() 
                 
                 
+    # def knz_git_mod_clean(baserpa, mfolder):
+    
+    
+        # import os, shutil
+        # shutil.rmtree(git_destination + mfolder, ignore_errors=True, onerror=None) 
+        
+        # try:
+            # os.remove(git_destination + baserpa)
+            # renpy.pause (5, hard=True)
+            # renpy.show("git_es_rst", layer='master')
+            # renpy.utter_restart() 
+        # except OSError, e:
+            # renpy.show("git_es_fail")
+            # renpy.pause (5, hard=True)
+            # renpy.show("git_es_rst", layer='master')
+            # renpy.utter_restart()
+            
+            
     def knz_git_mod_clean(baserpa, mfolder):
     
     
         import os, shutil
         shutil.rmtree(git_destination + mfolder, ignore_errors=True, onerror=None) 
-        
         try:
-            os.remove(git_destination + baserpa)
-            renpy.pause (5, hard=True)
+            persistent.del_baserpa = git_destination + baserpa
+            # os.remove(git_destination + baserpa)
+            renpy.pause (2, hard=True)
             renpy.show("git_es_rst", layer='master')
             renpy.utter_restart() 
         except OSError, e:
-            renpy.show("git_es_fail")
-            renpy.pause (5, hard=True)
-            renpy.show("git_es_rst", layer='master')
             renpy.utter_restart()
+            # renpy.show("git_es_fail")
+            # renpy.pause (2, hard=True)
+            # renpy.show("git_es_rst", layer='master')
+            # renpy.utter_restart()
             
             
-    def knz_get_data(rpyc_p, rpyc_f, rpyc_l, rpa_f, rpa_l):
-        global knz_rpyc_p
-        global knz_rpyc_f
-        global knz_rpyc_l
-        global knz_rpa_f
-        global knz_rpa_l
-        knz_rpyc_f = rpyc_f
-        knz_rpyc_l = rpyc_l
-        knz_rpyc_p = rpyc_p
-        knz_rpa_f = rpa_f
-        knz_rpa_l = rpa_l
+
             
 
    
