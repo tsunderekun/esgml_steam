@@ -12,6 +12,8 @@ init -54 python:
 
 
 label deleter:
+    stop music fadeout 5
     $ renpy.show("git_es_del", layer='master')
+    $ renpy.with_statement(fade, always=False)
     $ renpy.pause (5, hard=True)
     $ knz_git_mod_clean(knz_rpa_f, knz_rpyc_p)
