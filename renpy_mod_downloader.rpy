@@ -1,10 +1,11 @@
 init:
+    $ esgml_ver = 2.6
 
     transform git_img_b():
         on idle:
             easein 0.75 zoom 1.0
         on hover:
-            easein 0.75 zoom 1.1
+            easein 0.75 zoom 1.25
         on update:
             easein 0.75 zoom 1.0
 
@@ -155,23 +156,24 @@ screen knz_git_dwnl_menu:
             mousewheel True
             scrollbars None
             
-            has grid 2 len(mods_names)
+            has vbox
             for id, name, rpyc_f, rpa_f, rpyc_p, rpyc_l, rpa_l, destination in mods_names:
-                textbutton name xalign 0 xmaximum 0.9 action [Show('git_modnfo', dissolve, name, id)] at git_img_b:
-                    style "esgml_mm"
-                    text_style "esgml_mm"
-                hbox xpos 0.730 spacing 10:
+                hbox spacing 10 ypos:
                     
                     if os.path.isfile(destination + rpa_f):
-                        add 'res/git_dwl_inactive.png' xalign 0.90
+                        add 'res/git_dwl_inactive.png' xalign 0.01
                     else:
-                        imagebutton auto 'res/git_dwl_%s.png' action [Function(knz_get_data, rpyc_p, rpyc_f, rpyc_l, rpa_f, rpa_l), Function(renpy.call_in_new_context, 'run_down')] at git_img_b xalign 0.90
+                        imagebutton auto 'res/git_dwl_%s.png' action [Function(knz_get_data, rpyc_p, rpyc_f, rpyc_l, rpa_f, rpa_l), Function(renpy.call_in_new_context, 'run_down')] at git_img_b xalign 0.01
 
                         
                     if os.path.isfile(destination + rpa_f):
-                        imagebutton auto 'res/git_del_%s.png' action [Function(knz_get_data, rpyc_p, rpyc_f, rpyc_l, rpa_f, rpa_l), Function(renpy.call_in_new_context, 'deleter')] at git_img_b xalign 0.91
+                        imagebutton auto 'res/git_del_%s.png' action [Function(knz_get_data, rpyc_p, rpyc_f, rpyc_l, rpa_f, rpa_l), Function(renpy.call_in_new_context, 'deleter')] at git_img_b xalign 0
                     else:
-                        add 'res/git_del_inactive.png' xalign 0.91
+                        add 'res/git_del_inactive.png' xalign 0
+
+                    textbutton name ypos -0.2125  action [Show('git_modnfo', dissolve, id, name, rpyc_f, rpa_f, rpyc_p, rpyc_l, rpa_l, destination)] at git_img_b:
+                        style "esgml_mm"
+                        text_style "esgml_mm"
                         
     hbox yalign 0.975 xalign 0.5 spacing 144:
         if 'NLT_tl' in globals():
@@ -194,23 +196,41 @@ screen knz_git_dwnl_menu:
                     
                         
 
-screen git_modnfo(name, id):
+screen git_modnfo(id, name, rpyc_f, rpa_f, rpyc_p, rpyc_l, rpa_l, destination):
     modal False
     add "git_nfo"
     text name yalign 0.05 xalign 0.1:
         style "esgml_nn"
     hbox yalign 0.175 xalign 0.5 spacing 64:
-        imagebutton idle im.Grayscale(im.Scale(git_descr[id]['scr1'], 480, 270)) hover im.Scale(git_descr[id]['scr1'], 480, 270) action [Show('git_image', dissolve, git_descr[id]['scr1'], name, id)] at git_img_b
-        imagebutton idle im.Grayscale(im.Scale(git_descr[id]['scr2'], 480, 270)) hover im.Scale(git_descr[id]['scr2'], 480, 270) action [Show('git_image', dissolve, git_descr[id]['scr2'], name, id)] at git_img_b
-        imagebutton idle im.Grayscale(im.Scale(git_descr[id]['scr3'], 480, 270)) hover im.Scale(git_descr[id]['scr3'], 480, 270) action [Show('git_image', dissolve, git_descr[id]['scr3'], name, id)] at git_img_b
+        imagebutton idle im.Scale(git_descr[id]['scr1'], 480, 270) hover im.Scale(git_descr[id]['scr1'], 480, 270) action [Show('git_image', dissolve, git_descr[id]['scr1'], id, name, rpyc_f, rpa_f, rpyc_p, rpyc_l, rpa_l, destination)] at git_img_b
+        imagebutton idle im.Scale(git_descr[id]['scr2'], 480, 270) hover im.Scale(git_descr[id]['scr2'], 480, 270) action [Show('git_image', dissolve, git_descr[id]['scr2'], id, name, rpyc_f, rpa_f, rpyc_p, rpyc_l, rpa_l, destination)] at git_img_b
+        imagebutton idle im.Scale(git_descr[id]['scr3'], 480, 270) hover im.Scale(git_descr[id]['scr3'], 480, 270) action [Show('git_image', dissolve, git_descr[id]['scr3'], id, name, rpyc_f, rpa_f, rpyc_p, rpyc_l, rpa_l, destination)] at git_img_b
     text git_descr[id]['desc'] yalign 0.55 xmaximum 0.8 xalign 0.5:
         style "esgml_ii"
-    textbutton 'Назад' action [Show('knz_git_dwnl_menu', dissolve), Hide('git_modnfo')] at git_img_b:
-                yalign 0.9 xalign 0.1
-                style "esgml_bb"
-                text_style "esgml_bb"
+    hbox spacing 64 yalign 0.9 xalign 0.5:
+            textbutton 'Назад' action [Show('knz_git_dwnl_menu', dissolve), Hide('git_modnfo')]:
+                    style "esgml_bb"
+                    text_style "esgml_bb"
+                   
+                    
+            if os.path.isfile(destination + rpa_f):
+                textbutton 'Удалить' action [Function(knz_get_data, rpyc_p, rpyc_f, rpyc_l, rpa_f, rpa_l), Function(renpy.call_in_new_context, 'deleter')]:
+                        style "esgml_bb"
+                        text_style "esgml_bb"
+                textbutton 'Уже загружен':
+                        style "esgml_bb"
+                        text_style "esgml_bb"
+            else:
+                textbutton 'Загрузить' action [Function(knz_get_data, rpyc_p, rpyc_f, rpyc_l, rpa_f, rpa_l), Function(renpy.call_in_new_context, 'run_down')]:
+                        style "esgml_bb"
+                        text_style "esgml_bb"
+                textbutton 'Не установлен':
+                        style "esgml_bb"
+                        text_style "esgml_bb"
+                        
+
     
-screen git_image(img, name, id):
+screen git_image(img, id, name, rpyc_f, rpa_f, rpyc_p, rpyc_l, rpa_l, destination):
     add "git_nfo"
     add img:
         xalign 0.5
@@ -222,7 +242,7 @@ screen git_image(img, name, id):
         ypos 0
         xfill True
         yfill True
-        action [Show('git_modnfo', dissolve, name, id), Hide('git_image')]
+        action [Hide('git_image'), Show('git_modnfo', dissolve, id, name, rpyc_f, rpa_f, rpyc_p, rpyc_l, rpa_l, destination)]
 
 
                         
@@ -232,85 +252,61 @@ init 999 python:
 
     
 init python:
+    from threading import Thread
+    import os, shutil
+    
+    kprogress = None
+    knz_rpyc_p = None
+    knz_rpyc_f = None
+    knz_rpyc_l = None
+    knz_rpa_f = None
+    knz_rpa_l = None
 
     def knz_get_data(rpyc_p, rpyc_f, rpyc_l, rpa_f, rpa_l):
         global knz_rpyc_p
         global knz_rpyc_f
         global knz_rpyc_l
-        global knz_rpa_f
-        global knz_rpa_l
+        global knz_rpa_f 
+        global knz_rpa_l 
         knz_rpyc_f = rpyc_f
         knz_rpyc_l = rpyc_l
         knz_rpyc_p = rpyc_p
         knz_rpa_f = rpa_f
         knz_rpa_l = rpa_l
 
-
-    import time
-    config.image_cache_size_mb = 1536
+    
     def knz_dnwl_mod_base(mfolder, baserpyc, rpyclink):
 
-        import urllib2, os, shutil
-        
+        # global f_percent
         destination = git_destination + mfolder
-        
         os.mkdir(destination)
-        
-        filedata = urllib2.urlopen(rpyclink)  
-        datatowrite = filedata.read()
-        
-        with open(destination + baserpyc, 'wb') as f:  
-            f.write(datatowrite)
+        from urllib2 import urlopen
+        response = urlopen(rpyclink)
+        CHUNK = 16 * 1024
+        with open(baserpyc, 'wb') as f:
+            while True:
+                chunk = response.read(CHUNK)
+                if not chunk:
+                    break
+                f.write(chunk)
+        os.rename(baserpyc, destination + baserpyc)
 
     def knz_dnwl_mod(baserpa, rpalink):
 
-        import os, wget
+        from urllib2 import urlopen
+        response = urlopen(rpalink)
+        CHUNK = 16 * 1024
+        with open(baserpa, 'wb') as f:
+            while True:
+                chunk = response.read(CHUNK)
+                if not chunk:
+                    break
+                f.write(chunk)
+        os.rename(baserpa, git_destination + baserpa)
+        
 
-        s=rpalink
-        filename = wget.download(s)
-        os.rename(filename, git_destination + baserpa)
-        
-        try:
-            file = open(git_destination + baserpa)
-        except IOError as e:
-            renpy.hide_screen('knz_git_dwnl_menu')
-            renpy.show("git_es_fail")
-            renpy.with_statement(fade, always=False)
-            renpy.pause (5, hard=True)
-            renpy.show("git_es_rst")
-            renpy.with_statement(fade, always=False)
-            renpy.utter_restart() 
-        else:
-            with file:
-                renpy.hide_screen('knz_git_dwnl_menu')
-                renpy.show("git_es_succ", layer='master')
-                renpy.with_statement(fade, always=False)
-                renpy.pause (5, hard=True)
-                renpy.show("git_es_rst", layer='master')
-                renpy.with_statement(fade, always=False)
-                renpy.utter_restart() 
-                
-
-    def knz_dnwl_another(baseanother, anotherlink):
-             
-        import urllib2, os, shutil
-        
-        destination = git_destination
-        
-        os.mkdir(destination)
-        
-        filedata = urllib2.urlopen(anotherlink)
-        datatowrite = filedata.read()
-        
-        with open(destination + baseanother, 'wb') as f:  
-            f.write(datatowrite)            
-
-            
-            
     def knz_git_mod_clean(baserpa, mfolder):
     
-    
-        import os, shutil
         shutil.rmtree(git_destination + mfolder, ignore_errors=True, onerror=None) 
         try:
             persistent.del_baserpa = git_destination + baserpa
@@ -321,10 +317,6 @@ init python:
             renpy.utter_restart() 
         except OSError, e:
             renpy.utter_restart()
-            
-            
-
-            
 
    
     ###MOD CHECKER###
@@ -336,7 +328,7 @@ init -10 python:
         try:
             file = open(destination + rpaf)
         except IOError as e:
-            print(u'Sorry, senpai, file not downloaded(((')
+            pass
         else:
             with file:
                 config.archives.append(rpan) 
@@ -348,7 +340,7 @@ init -10 python:
         try:
             file = open(destination + rpaf)
         except IOError as e:
-            print(u'Sorry, senpai, file not downloaded(((')
+            pass
         else:
             with file:
                 mods[git_mod_id]=git_mod_name
