@@ -1,6 +1,6 @@
 init:
     $ mods["knz_dwnl_git"]=u"Everlasting Summer GitHub Mods Loader"
-    $ esgml_ver = '2.6a'
+    $ esgml_ver = '2.6b'
 
     transform git_img_b():
         on idle:
@@ -175,6 +175,7 @@ screen knz_git_dwnl_menu:
     $ import os.path
     modal False
     window:
+        xalign 0 yalign 0
         background "git_nfo"
         vbox xpos 0.0725 ypos 0.175 yfill:
 
@@ -220,7 +221,7 @@ screen knz_git_dwnl_menu:
                         style "esgml_bb"
                         text_style "esgml_bb"
 
-        textbutton 'Главное меню' action [SetField(config, "mouse", {'default' : [('images/misc/mouse/1.png', 0, 0)]}), Return()] at git_img_b:
+        textbutton 'Главное меню' action [SetField(config, "mouse", {'default' : [('images/misc/mouse/1.png', 0, 0)]}), Return("mm")] at git_img_b:
                     style "esgml_bb"
                     text_style "esgml_bb"
 
@@ -234,6 +235,8 @@ screen knz_git_dwnl_menu:
                     text_style "esgml_bb"
 
 label go_to_git_authors:
+    if _return == "mm":
+        return
     call screen git_authors with fade
 
 screen git_authors:
