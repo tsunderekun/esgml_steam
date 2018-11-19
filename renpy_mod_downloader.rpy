@@ -445,8 +445,10 @@ init python:
     ###MOD CHECKER###
 
 init -10 python:
+    git_archives = []
     def rpa_check_append(rpaf, rpan):
         import os
+        global git_archives
         destination = renpy.config.basedir + '/../../workshop/content/331470/1515489831/'
         try:
             file = open(destination + rpaf)
@@ -455,6 +457,7 @@ init -10 python:
         else:
             with file:
                 config.archives.append(rpan)
+                git_archives.append(rpan)
 
     def rpa_check_varinst(git_mod_id, git_mod_name, rpaf):
         global mods
@@ -467,3 +470,7 @@ init -10 python:
         else:
             with file:
                 mods[git_mod_id]=git_mod_name
+
+init 10 python:
+    for a in git_archives:
+        config.archives.append(a)
