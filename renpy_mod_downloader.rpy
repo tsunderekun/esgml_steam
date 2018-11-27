@@ -1,6 +1,6 @@
 init:
-    $ mods["knz_dwnl_git"]=u"Everlasting Summer GitHub Mods Loader"
-    $ esgml_ver = '2.6b'
+    $ mods["knz_dwnl_git"]=u"{font=res/esgml_new.otf}Everlasting Summer GitHub Mods Loader{/font}"
+    $ esgml_ver = '2.6d'
 
     transform git_img_b():
         on idle:
@@ -10,15 +10,6 @@ init:
         on update:
             easeout_back 0.75 zoom 1.0
 
-        # on idle:
-        #     easein 0.75 zoom 1.0
-        # on hover:
-        #     rotate_pad True
-        #     easein 0.2 zoom 0.5
-        #     easein 0.75 rotate 360
-        #     easein 0.2 zoom 1
-        # on update:
-        #     easein 0.75 zoom 1.0
 
     image git_nfo = "res/git_nfo.png"
     $ nfo_text = ''
@@ -63,12 +54,6 @@ init:
 
 
     $ git_descr = {
-        'evn' : {
-                'desc':'',
-                'scr1':'git_screens/evn (1).png',
-                'scr2':'git_screens/evn (2).png',
-                'scr3':'git_screens/evn (3).png'
-                },
         'dwl' : {
                 'desc':'Небольшой мод по одноимённому фанфику. События мода начинаются в седьмой день, когда Семён покидает Лену, думая лишь о том, чтобы поскорее вернуться домой. Но вернувшись в домик Лены, он видит, что Лена умирает...',
                 'scr1':'git_screens/dwl (1).png',
@@ -133,8 +118,6 @@ init:
 
 
     $ mods_names = [
-    ('evn', "Бесконечные кошмары", "evn_git_base.rpyc", "nightmares.rpa", "nightmares/", "https://github.com/tsunderekun/es_gitmods/raw/master/evn_git_base.rpyc", "https://github.com/tsunderekun/es_gitmods/raw/master/Nightmares.rpa", git_destination),
-
     ('dwl', "Дни с Леной", "git_dayswithlena.rpyc", "git_dayswithlena_res.rpa", "dayswithlena/", "https://github.com/tsunderekun/es_gitmods/raw/master/git_dayswithlena.rpyc", "https://github.com/tsunderekun/es_gitmods/raw/master/git_dayswithlena_res.rpa", git_destination),
 
     ('vkun', "Совенок в тумане", "git_vkun_fog.rpyc", "VKUN_MOD.rpa", "vkun_fog/", "https://github.com/tsunderekun/es_gitmods/raw/master/git_vkun_fog.rpyc", "https://github.com/tsunderekun/es_gitmods/raw/master/VKUN_MOD.rpa", git_destination),
@@ -160,7 +143,10 @@ init:
 label knz_dwnl_git:
     $ config.mouse = {'default' : [("res/cursor.png", 0, 0)]}
     play music 'res/git_main.ogg' fadein 5
-    call screen knz_git_dwnl_menu with dissolve
+    if persistent.evn_del == True:
+        call screen non_supp_mod with dissolve
+    else:
+        call screen knz_git_dwnl_menu with dissolve
 
 screen knz_info_screen(nfo_text, m_nfo_text):
     modal False
@@ -169,6 +155,24 @@ screen knz_info_screen(nfo_text, m_nfo_text):
         style "esgml_nn"
     text m_nfo_text xalign 0.5 yalign 0.54:
         style "esgml_nm"
+
+screen non_supp_mod:
+    modal False
+    window:
+        xalign 0 yalign 0
+        background "git_nfo"
+        text "Был удален более несовместимый мод \"[persistent.evn_deln]\"." xalign 0.5 yalign 0.45:
+            style "esgml_nn"
+        textbutton "Я понял. Продолжить." action [Function(renpy.call_in_new_context, 'esgml_countinue')] xalign 0.5 yalign 0.60 at git_img_b:
+            style "esgml_bb"
+            text_style "esgml_bb"
+
+label esgml_countinue:
+
+    $ persistent.evn_del = False
+    $ persistent.evn_deln = ""
+    jump knz_dwnl_git
+
 
 
 screen knz_git_dwnl_menu:
@@ -459,6 +463,9 @@ init -10 python:
                 config.archives.append(rpan)
                 git_archives.append(rpan)
 
+
+
+
     def rpa_check_varinst(git_mod_id, git_mod_name, rpaf):
         global mods
         import os
@@ -469,7 +476,7 @@ init -10 python:
             pass
         else:
             with file:
-                mods[git_mod_id]=git_mod_name
+                    mods[git_mod_id]=git_mod_name
 
 init 10 python:
     for a in git_archives:
