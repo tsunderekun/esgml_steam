@@ -1,14 +1,36 @@
 init:
     $ mods["knz_dwnl_git"]=u"{font=res/esgml_new.otf}Everlasting Summer GitHub Mods Loader{/font}"
-    $ esgml_ver = '2.6d'
+    $ esgml_ver = 'Electron 2.7a'
 
     transform git_img_b():
+        parallel:
+            on idle:
+                easeout_back 0.75 zoom 1.0
+            on hover:
+                easein_back 0.75 zoom 1.25
+            on update:
+                easeout_back 0.75 zoom 1.0
+        parallel:
+            on idle:
+                easein 0.75 alpha 1.0
+            on hover:
+                easein 0.75 alpha 0.5
+            on update:
+                easein 0.75 alpha 1.0
+
+    transform git_img_c():
         on idle:
-            easeout_back 0.75 zoom 1.0
+            easein 0.75 alpha 1.0
         on hover:
-            easein_back 0.75 zoom 1.25
+            easein 0.75 alpha 0.5
         on update:
-            easeout_back 0.75 zoom 1.0
+            easein 0.75 alpha 1.0
+
+    transform git_img_u():
+        easein 2 alpha 0
+        easein 2 alpha 1.0
+
+
 
 
     image git_nfo = "res/git_nfo.png"
@@ -19,7 +41,7 @@ init:
 
     $ style.esgml_mm = Style(style.default)
     $ style.esgml_mm.color = (255, 255, 255, 100)
-    $ style.esgml_mm.hover_color = (255, 255, 255, 48)
+    $ style.esgml_mm.hover_color = (255, 255, 255, 55)
     $ style.esgml_mm.size = 55
     $ style.esgml_mm.font = "res/esgml_new.otf"
     $ style.esgml_mm.text_align = 0.5
@@ -114,6 +136,18 @@ init:
                 'scr2':'git_screens/emk1 (2).png',
                 'scr3':'git_screens/emk1 (3).png'
                 },
+        'rs' : {
+                'desc':'Мод расскажет про альтернативное развитие событий уже известного всем романа. Пару неприятностей здесь всё-таки случилось. Но пугаться нечего, потому что почти у каждой истории есть хороший конец, и наша не исключение. \n Мод берёт своё начало сразу после окончания смены в лагере, где Семён прощается с Сэм.\n Модификация является представителем жанра триллер с отголосками романтики и драмы, а так же будет ориентироваться на вдумчивого читателя, который не ограничится написанным и раскроет ещё больше в своей фантазии.',
+                'scr1':'git_screens/rs (1).png',
+                'scr2':'git_screens/rs (2).png',
+                'scr3':'git_screens/rs (3).png'
+                },
+        'hs' : {
+                'desc':'Сюжет данного мода разворачивается во время второго визита главного героя в "Совёнок". В отличии от предыдущих витков все пионеры не потеряли память и помнят, что произошло прошлым лето, а Семён сделал этот выбор сознательно. Старые знакомые, увлекательная компания, замечательное лето... но не всё так гладко. Вскоре все узнают, что эта смена будет не совсем обычной, и им придётся бороться за то, чтобы увидеть её конец.\n • Вас ждёт увлекательное приключение с большим многообразием ответвлений и различных выборов, события одного и того же дня могут разворачиваться совершенно по другому.\n • Общайтесь с персонажами, но помните: ваши действия могут как улучшить взаимоотношения, так и испортить их.\n • Взаимодействуйте с миром в интерактивных заданиях. Наведите курсор на изображение на экране, чтобы взаимодействовать с ним.\n • Со временем сюжет будет уже не похож на простую прогулку по лагерю, а превратиться в суровое выживание, где от ваших выборов будет зависеть, кто сможет дойти до конца, а кто - нет. \n • Каждое событие имеет свои чёткие причины и последствия. Поэтому не спешите делать выбор и задумайтесь. \n Углубитесь в прошлое и узнайте причину происходящих здесь кошмаров. Сможете ли вы пройти через это испытание невредимым и спасти дорогих и близких людей? По силам ли вам спасти всех и разблокировать Героическую концовку?',
+                'scr1':'git_screens/hs (1).png',
+                'scr2':'git_screens/hs (2).png',
+                'scr3':'git_screens/hs (3).png'
+                },
     }
 
 
@@ -135,6 +169,10 @@ init:
     ('emk1', "Эпилог МК1", "emk1_base.rpyc", "emk1.rpa", "emk1/", "https://github.com/tsunderekun/es_gitmods/raw/master/emk1_base.rpyc", "https://github.com/tsunderekun/es_gitmods/raw/master/emk1.rpa", git_destination),
 
     ('v17', "Где мои семнадцать лет?", "base_v17.rpyc", "git_v17.rpa", "v17/", "https://github.com/tsunderekun/es_gitmods/raw/master/base_v17.rpyc", "https://github.com/tsunderekun/es_gitmods/raw/master/git_v17.rpa", git_destination),
+
+    ('rs', "Чёрная страница из дневника Сэм", "rs_base.rpyc", "rs_common.rpa", "rs_base/", "https://gitlab.com/tsunderekun/esgml_mods/raw/master/git_rs/rs_base.rpyc", "https://gitlab.com/tsunderekun/esgml_mods/raw/master/git_rs/rs_common.rpa", git_destination),
+
+    ('hs', "Ужасное Лето", "hs_base.rpyc", "hs_common.rpa", "hs_base/", "https://gitlab.com/tsunderekun/esgml_mods/raw/master/git_hs/hs_base.rpyc", "https://gitlab.com/tsunderekun/esgml_mods/raw/master/git_hs/hs_common.rpa", git_destination),
     ]
 
 
@@ -143,6 +181,9 @@ init:
 label knz_dwnl_git:
     $ config.mouse = {'default' : [("res/cursor.png", 0, 0)]}
     play music 'res/git_main.ogg' fadein 5
+    if _return == "mm":
+        $ config.mouse = {'default' : [("images/misc/mouse/1.png", 0, 0)]}
+        return
     if persistent.evn_del == True:
         call screen non_supp_mod with dissolve
     else:
@@ -151,9 +192,9 @@ label knz_dwnl_git:
 screen knz_info_screen(nfo_text, m_nfo_text):
     modal False
     add 'git_nfo'
-    text nfo_text xalign 0.5 yalign 0.45:
+    text nfo_text xalign 0.5 yalign 0.45 at git_img_u:
         style "esgml_nn"
-    text m_nfo_text xalign 0.5 yalign 0.54:
+    text m_nfo_text xalign 0.5 yalign 0.54 at git_img_u:
         style "esgml_nm"
 
 screen non_supp_mod:
@@ -316,33 +357,41 @@ screen git_modnfo(id, name, rpyc_f, rpa_f, rpyc_p, rpyc_l, rpa_l, destination):
     add "git_nfo"
     text name yalign 0.05 xalign 0.1:
         style "esgml_nn"
-    hbox yalign 0.175 xalign 0.5 spacing 64:
-        imagebutton idle im.Scale(git_descr[id]['scr1'], 480, 270) hover im.Scale(git_descr[id]['scr1'], 480, 270) action [Show('git_image', dissolve, git_descr[id]['scr1'], id, name, rpyc_f, rpa_f, rpyc_p, rpyc_l, rpa_l, destination)] at git_img_b
-        imagebutton idle im.Scale(git_descr[id]['scr2'], 480, 270) hover im.Scale(git_descr[id]['scr2'], 480, 270) action [Show('git_image', dissolve, git_descr[id]['scr2'], id, name, rpyc_f, rpa_f, rpyc_p, rpyc_l, rpa_l, destination)] at git_img_b
-        imagebutton idle im.Scale(git_descr[id]['scr3'], 480, 270) hover im.Scale(git_descr[id]['scr3'], 480, 270) action [Show('git_image', dissolve, git_descr[id]['scr3'], id, name, rpyc_f, rpa_f, rpyc_p, rpyc_l, rpa_l, destination)] at git_img_b
-    text git_descr[id]['desc'] yalign 0.55 xmaximum 0.8 xalign 0.5:
-        style "esgml_ii"
     hbox spacing 64 yalign 0.9 xalign 0.5:
-            textbutton 'Назад' action [Show('knz_git_dwnl_menu', dissolve), Hide('git_modnfo')]:
+            textbutton 'Назад' action [Show('knz_git_dwnl_menu', dissolve), Hide('git_modnfo')] at git_img_b:
                     style "esgml_bb"
                     text_style "esgml_bb"
 
 
             if os.path.isfile(destination + rpa_f):
-                textbutton 'Удалить' action [Function(knz_get_data, rpyc_p, rpyc_f, rpyc_l, rpa_f, rpa_l), Function(renpy.call_in_new_context, 'deleter')]:
+                textbutton 'Удалить' action [Function(knz_get_data, rpyc_p, rpyc_f, rpyc_l, rpa_f, rpa_l), Function(renpy.call_in_new_context, 'deleter')] at git_img_b:
                         style "esgml_bb"
                         text_style "esgml_bb"
                 textbutton 'Уже загружен':
                         style "esgml_bb"
                         text_style "esgml_bb"
             else:
-                textbutton 'Загрузить' action [Function(knz_get_data, rpyc_p, rpyc_f, rpyc_l, rpa_f, rpa_l), Function(renpy.call_in_new_context, 'run_down')]:
+                textbutton 'Загрузить' action [Function(knz_get_data, rpyc_p, rpyc_f, rpyc_l, rpa_f, rpa_l), Function(renpy.call_in_new_context, 'run_down')] at git_img_b:
                         style "esgml_bb"
                         text_style "esgml_bb"
                 textbutton 'Не установлен':
                         style "esgml_bb"
                         text_style "esgml_bb"
-
+    side "c":
+        area (0.1, 0.175, 0.9, 0.65)
+        viewport id "modnfo":
+            xalign 0.5 yalign 0.175
+            mousewheel True
+            draggable True
+            scrollbars None
+            vbox:
+                hbox yalign 0.175 xalign 0.5 spacing 64:
+                    imagebutton idle im.Scale(git_descr[id]['scr1'], 480, 270) hover im.Scale(git_descr[id]['scr1'], 480, 270) action [Show('git_image', dissolve, git_descr[id]['scr1'], id, name, rpyc_f, rpa_f, rpyc_p, rpyc_l, rpa_l, destination)] at git_img_c
+                    imagebutton idle im.Scale(git_descr[id]['scr2'], 480, 270) hover im.Scale(git_descr[id]['scr2'], 480, 270) action [Show('git_image', dissolve, git_descr[id]['scr2'], id, name, rpyc_f, rpa_f, rpyc_p, rpyc_l, rpa_l, destination)] at git_img_c
+                    imagebutton idle im.Scale(git_descr[id]['scr3'], 480, 270) hover im.Scale(git_descr[id]['scr3'], 480, 270) action [Show('git_image', dissolve, git_descr[id]['scr3'], id, name, rpyc_f, rpa_f, rpyc_p, rpyc_l, rpa_l, destination)] at git_img_c
+                text git_descr[id]['desc'] yalign 0.55 xalign 0.5:
+                    style "esgml_ii"
+                    xmaximum 0.90
 
 
 screen git_image(img, id, name, rpyc_f, rpa_f, rpyc_p, rpyc_l, rpa_l, destination):
@@ -435,7 +484,7 @@ init python:
             m_nfo_text = 'Ожидайте, пожалуйста.'
             renpy.hide_screen('knz_info_screen')
             renpy.show_screen('knz_info_screen', nfo_text, m_nfo_text)
-            renpy.pause (2, hard=True)
+            renpy.pause (5, hard=True)
             renpy.utter_restart()
         except OSError, e:
             renpy.hide_screen('knz_info_screen')
@@ -478,6 +527,13 @@ init -10 python:
             with file:
                     mods[git_mod_id]=git_mod_name
 
+    ###MOD CONFIGURATORS###
+
+
 init 10 python:
     for a in git_archives:
         config.archives.append(a)
+    try:
+        modsImages["knz_dwnl_git"] = ("ESGML.png", False)
+    except:
+        pass
