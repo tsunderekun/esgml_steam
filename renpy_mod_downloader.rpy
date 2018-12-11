@@ -1,6 +1,6 @@
 init:
     $ mods["knz_dwnl_git"]=u"{font=res/esgml_new.otf}Everlasting Summer GitHub Mods Loader{/font}"
-    $ esgml_ver = 'Electron 2.7a'
+    $ esgml_ver = 'Electron 2.7b'
 
     transform git_img_b():
         parallel:
@@ -148,6 +148,12 @@ init:
                 'scr2':'git_screens/hs (2).png',
                 'scr3':'git_screens/hs (3).png'
                 },
+        'idnh' : {
+                'desc':'Наш главный герой, Иван Смирнов, обычный ученик колледжа на четвёртом году обучения, которому приспичило не спать четверо суток и играть в новеллу «Бесконечное лето». Казалось бы, с кем не бывает? Но в один момент, он засыпает у себя дома и видит сон, где двое мужчин обсуждают захоронение заживо какой-то девочки, что прокляла всю деревню. Проснувшись, Ваня идёт на кухню промыть нос, который был у него в крови, а потом неожиданно падает в обморок. Вдруг Ваня появляется в заброшеном пионерлагере «Совёнок» и… забывает всю свою прошлую жизнь.\n Пребывая малое количество времени в этом, казалось бы, райском и безлюдном месте, он натыкается на могилы умерших пионеров, в том числе и... свою! Что же случилось с ними и что он должен сделать, чтобы изменить череду событий в лучшую сторону? Однако его ещё и успевают убить… ',
+                'scr1':'git_screens/idnh (1).png',
+                'scr2':'git_screens/idnh (2).png',
+                'scr3':'git_screens/idnh (3).png'
+                },
     }
 
 
@@ -173,6 +179,8 @@ init:
     ('rs', "Чёрная страница из дневника Сэм", "rs_base.rpyc", "rs_common.rpa", "rs_base/", "https://gitlab.com/tsunderekun/esgml_mods/raw/master/git_rs/rs_base.rpyc", "https://gitlab.com/tsunderekun/esgml_mods/raw/master/git_rs/rs_common.rpa", git_destination),
 
     ('hs', "Ужасное Лето", "hs_base.rpyc", "hs_common.rpa", "hs_base/", "https://gitlab.com/tsunderekun/esgml_mods/raw/master/git_hs/hs_base.rpyc", "https://gitlab.com/tsunderekun/esgml_mods/raw/master/git_hs/hs_common.rpa", git_destination),
+
+    ('idnh', "Re: I Do Not Have", "idnh_base.rpyc", "idnh_common.rpa", "idnh_base/", "https://gitlab.com/tsunderekun/esgml_mods/raw/master/git_idnh/idnh_base.rpyc", "https://gitlab.com/tsunderekun/esgml_mods/raw/master/git_idnh/idnh_common.rpa", git_destination),
     ]
 
 
@@ -217,7 +225,7 @@ label esgml_countinue:
 
 
 screen knz_git_dwnl_menu:
-    $ import os.path
+    $ import os as git_os
     modal False
     window:
         xalign 0 yalign 0
@@ -241,13 +249,13 @@ screen knz_git_dwnl_menu:
             for id, name, rpyc_f, rpa_f, rpyc_p, rpyc_l, rpa_l, destination in mods_names:
                 hbox spacing 10 ypos:
 
-                    if os.path.isfile(destination + rpa_f):
+                    if git_os.path.isfile(destination + rpa_f):
                         add 'res/git_dwl_inactive.png' xalign 0.01
                     else:
                         imagebutton auto 'res/git_dwl_%s.png' action [Function(knz_get_data, rpyc_p, rpyc_f, rpyc_l, rpa_f, rpa_l), Function(renpy.call_in_new_context, 'run_down')] at git_img_b xalign 0.01
 
 
-                    if os.path.isfile(destination + rpa_f):
+                    if git_os.path.isfile(destination + rpa_f):
                         imagebutton auto 'res/git_del_%s.png' action [Function(knz_get_data, rpyc_p, rpyc_f, rpyc_l, rpa_f, rpa_l), Function(renpy.call_in_new_context, 'deleter')] at git_img_b xalign 0
                     else:
                         add 'res/git_del_inactive.png' xalign 0
@@ -363,7 +371,7 @@ screen git_modnfo(id, name, rpyc_f, rpa_f, rpyc_p, rpyc_l, rpa_l, destination):
                     text_style "esgml_bb"
 
 
-            if os.path.isfile(destination + rpa_f):
+            if git_os.path.isfile(destination + rpa_f):
                 textbutton 'Удалить' action [Function(knz_get_data, rpyc_p, rpyc_f, rpyc_l, rpa_f, rpa_l), Function(renpy.call_in_new_context, 'deleter')] at git_img_b:
                         style "esgml_bb"
                         text_style "esgml_bb"
@@ -417,7 +425,8 @@ init 999 python:
 
 init python:
     from threading import Thread
-    import os, shutil
+    import os as git_os
+    import shutil
 
     kprogress = None
     knz_rpyc_p = None
@@ -443,7 +452,7 @@ init python:
 
         # global f_percent
         destination = git_destination + mfolder
-        os.mkdir(destination)
+        git_os.mkdir(destination)
         from urllib2 import urlopen
         response = urlopen(rpyclink)
         CHUNK = 16 * 1024
@@ -453,7 +462,7 @@ init python:
                 if not chunk:
                     break
                 f.write(chunk)
-        os.rename(baserpyc, destination + baserpyc)
+        git_os.rename(baserpyc, destination + baserpyc)
 
     def knz_dnwl_mod(baserpa, rpalink):
 
@@ -466,7 +475,7 @@ init python:
                 if not chunk:
                     break
                 f.write(chunk)
-        os.rename(baserpa, git_destination + baserpa)
+        git_os.rename(baserpa, git_destination + baserpa)
 
 
     def knz_git_mod_clean(baserpa, mfolder):
@@ -500,7 +509,7 @@ init python:
 init -10 python:
     git_archives = []
     def rpa_check_append(rpaf, rpan):
-        import os
+        import os as git_os
         global git_archives
         destination = renpy.config.basedir + '/../../workshop/content/331470/1515489831/'
         try:
@@ -517,7 +526,7 @@ init -10 python:
 
     def rpa_check_varinst(git_mod_id, git_mod_name, rpaf):
         global mods
-        import os
+        import os as git_os
         destination = renpy.config.basedir + '/../../workshop/content/331470/1515489831/'
         try:
             file = open(destination + rpaf)
