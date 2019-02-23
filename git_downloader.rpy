@@ -1,17 +1,26 @@
 label run_down:
     stop music fadeout 5
-    $ nfo_text = 'Загружаю'
-    $ m_nfo_text = 'Ожидайте, происходит загрузка выбранного мода.\nСходите, чай заварите, например...'
-    $ renpy.hide_screen('knz_git_dwnl_menu')
-    $ renpy.show_screen('knz_info_screen', nfo_text, m_nfo_text)
-    $ renpy.pause (5, hard=True)
     python:
-        t2 = Thread(target=knz_dnwl_mod_base, args=(knz_rpyc_p, knz_rpyc_f, knz_rpyc_l))
-        t3 = Thread(target=knz_dnwl_mod, args=(knz_rpa_f, knz_rpa_l))
-        t2.start()
-        t3.start()
-        t2.join()
-        t3.join()
+        # t2 = Thread(target=knz_dnwl_mod_base, args=(knz_rpyc_p, knz_rpyc_f, knz_rpyc_l))
+        # t3 = Thread(target=knz_dnwl_mod, args=(knz_rpa_f, knz_rpa_l))
+        # t2.start()
+        # t3.start()
+        # t2.join()
+        # t3.join()
+        renpy.invoke_in_thread(knz_dnwl_mod_base, knz_rpyc_p, knz_rpyc_f, knz_rpyc_l )
+        renpy.invoke_in_thread(knz_dnwl_mod, knz_rpa_f, knz_rpa_l )
+        nfo_text = 'Загружаю'
+        m_nfo_text = 'Ожидайте, происходит загрузка выбранного мода.\nСходите, чай заварите, например...'
+        renpy.hide_screen('knz_git_dwnl_menu')
+        renpy.show_screen('knz_info_screen', nfo_text, m_nfo_text)
+        # $ renpy.pause (5, hard=True)
+        while True:
+            renpy.pause(1, hard=True)
+            renpy.show_screen('knz_info_screen', nfo_text, m_nfo_text)
+            if ready_m and ready_ma == True:
+                break
+
+
         try:
             file = open(git_destination + knz_rpa_f)
         except IOError as e:
@@ -21,6 +30,8 @@ label run_down:
             renpy.show_screen('knz_info_screen', nfo_text, m_nfo_text)
             renpy.pause (5, hard=True)
             renpy.show("git_es_rst")
+            ready_ma = False
+            ready_m = False
             renpy.utter_restart()
         else:
             with file:
@@ -34,4 +45,6 @@ label run_down:
                 renpy.hide_screen('knz_info_screen')
                 renpy.show_screen('knz_info_screen', nfo_text, m_nfo_text)
                 renpy.pause (5, hard=True)
+                ready_ma = False
+                ready_m = False
                 renpy.utter_restart()

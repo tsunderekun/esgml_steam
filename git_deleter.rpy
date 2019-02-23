@@ -1,4 +1,4 @@
-init -100 python:
+init -9999 python:
 
     def nano_cleaner(baserpa, mfolder):
         import shutil, os

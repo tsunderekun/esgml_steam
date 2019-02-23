@@ -1,7 +1,9 @@
 init:
     $ mods["knz_dwnl_git"]=u"{font=res/esgml_new.otf}Everlasting Summer GitHub Mods Loader{/font}"
-    $ esgml_ver = 'Electron 2.7b'
-
+    $ esgml_ver = 'Electron 2.8'
+    $ ch_pr = ''
+    $ ready_ma = False
+    $ ready_m = False
     transform git_img_b():
         parallel:
             on idle:
@@ -154,10 +156,18 @@ init:
                 'scr2':'git_screens/idnh (2).png',
                 'scr3':'git_screens/idnh (3).png'
                 },
+        '8dl' : {
+                'desc':'\"7 дней лета (7дл)\" - модификация для \"Бесконечного лета\", представляющая собой альтернативный взгляд как на историю, так и на вселенную оригинальной игры. Включает в себя новый оригинальный сценарий, множество новых иллюстраций, а также почти полностью переосмысленное музыкальное сопровождение.',
+                'scr1':'git_screens/8dl (1).jpg',
+                'scr2':'git_screens/8dl (2).png',
+                'scr3':'git_screens/8dl (3).jpg'
+                },
     }
 
 
     $ mods_names = [
+    ('8dl', "Семь Дней Лета", "7dl_esgml_init.rpyc", "7dl.rpa", "7dl/", "https://gitlab.com/tsunderekun/esgml_mods/raw/master/7dl/7dl_esgml_init.rpyc", "https://gitlab.com/tsunderekun/esgml_mods/raw/master/7dl/7dl.rpa", git_destination),
+
     ('dwl', "Дни с Леной", "git_dayswithlena.rpyc", "git_dayswithlena_res.rpa", "dayswithlena/", "https://github.com/tsunderekun/es_gitmods/raw/master/git_dayswithlena.rpyc", "https://github.com/tsunderekun/es_gitmods/raw/master/git_dayswithlena_res.rpa", git_destination),
 
     ('vkun', "Совенок в тумане", "git_vkun_fog.rpyc", "VKUN_MOD.rpa", "vkun_fog/", "https://github.com/tsunderekun/es_gitmods/raw/master/git_vkun_fog.rpyc", "https://github.com/tsunderekun/es_gitmods/raw/master/VKUN_MOD.rpa", git_destination),
@@ -203,6 +213,8 @@ screen knz_info_screen(nfo_text, m_nfo_text):
     text nfo_text xalign 0.5 yalign 0.45 at git_img_u:
         style "esgml_nn"
     text m_nfo_text xalign 0.5 yalign 0.54 at git_img_u:
+        style "esgml_nm"
+    text ch_pr xalign 0.5 yalign 0.61 at git_img_u:
         style "esgml_nm"
 
 screen non_supp_mod:
@@ -448,9 +460,10 @@ init python:
         knz_rpa_l = rpa_l
 
 
-    def knz_dnwl_mod_base(mfolder, baserpyc, rpyclink):
 
-        # global f_percent
+    def knz_dnwl_mod_base(mfolder, baserpyc, rpyclink):
+        global ready_m
+        ready_m = False
         destination = git_destination + mfolder
         git_os.mkdir(destination)
         from urllib2 import urlopen
@@ -460,25 +473,53 @@ init python:
             while True:
                 chunk = response.read(CHUNK)
                 if not chunk:
+                    ready_m = True
                     break
                 f.write(chunk)
         git_os.rename(baserpyc, destination + baserpyc)
 
     def knz_dnwl_mod(baserpa, rpalink):
-
+        global ready_ma
+        global ch_pr
+        ch_pr = "Инициализация..."
+        ready_ma = False
         from urllib2 import urlopen
         response = urlopen(rpalink)
         CHUNK = 16 * 1024
+        meta = response.info()
+        ch_full_4 = meta.getheaders("Content-Length")
+        ch_ful_4 = "".join(ch_full_4)
+        ch_full_3 = float(ch_ful_4)
+        ch_full_2 = (ch_full_3 / 1000) / 1000
+        ch_full_1 = round(ch_full_2, 2)
+        ch_full = str(ch_full_1)
         with open(baserpa, 'wb') as f:
             while True:
+                ch_pr_b = float(git_os.stat(baserpa).st_size)
+                ch_pr_mb = (ch_pr_b / 1000) / 1000
+                ch_pr_r = round(ch_pr_mb, 2)
+                ch_pr_st = str(ch_pr_r)
+                ch_real_2 = (ch_pr_mb / ch_full_1 * 100)
+                ch_real_1 = round(ch_real_2, 1)
+                ch_real = str(ch_real_1) #Item::progress = double(Item::bytes_processed) / Item::total_bytes * 100;
+                ch_pr = "Загружено: " + ch_pr_st  + " МБайт из " + ch_full + " МБайт " + ch_real + "%"
+
                 chunk = response.read(CHUNK)
                 if not chunk:
+                    ready_ma = True
                     break
                 f.write(chunk)
         git_os.rename(baserpa, git_destination + baserpa)
+        ch_pr_b = float(git_os.stat(git_destination + baserpa).st_size)
+        ch_pr_mb = (ch_pr_b / 1000) / 1000
+        ch_pr_r = round(ch_pr_mb, 2)
+        ch_pr_st = str(ch_pr_r)
+        ch_pr = "Загружено: " + ch_pr_st + " МБайт из " + ch_full + " МБайт " + ch_real + "%"
 
 
     def knz_git_mod_clean(baserpa, mfolder):
+        global ch_pr
+        ch_pr = ''
         shutil.rmtree(git_destination + mfolder, ignore_errors=True, onerror=None)
         renpy.hide_screen('knz_git_dwnl_menu')
         nfo_text = 'Удаление'
