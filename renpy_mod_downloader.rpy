@@ -1,6 +1,6 @@
 init:
     $ mods["knz_dwnl_git"]=u"{font=res/esgml_new.otf}Everlasting Summer GitHub Mods Loader{/font}"
-    $ esgml_ver = 'Electron 2.8'
+    $ esgml_ver = 'Electron 2.8a'
     $ ch_pr = ''
     $ ready_ma = False
     $ ready_m = False
@@ -197,6 +197,7 @@ init:
 
 
 label knz_dwnl_git:
+    window hide
     $ config.mouse = {'default' : [("res/cursor.png", 0, 0)]}
     play music 'res/git_main.ogg' fadein 5
     if _return == "mm":
