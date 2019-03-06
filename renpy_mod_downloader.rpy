@@ -79,31 +79,31 @@ init:
 
     $ git_descr = {
         'dwl' : {
-                'desc':'Небольшой мод по одноимённому фанфику. События мода начинаются в седьмой день, когда Семён покидает Лену, думая лишь о том, чтобы поскорее вернуться домой. Но вернувшись в домик Лены, он видит, что Лена умирает...',
+                'desc':'\nНебольшой мод по\xa0одноимённому фанфику.\n\nСобытия мода начинаются с\xa0седьмого дня пребывания в\xa0лагере, когда Семён покидает Лену, думая\xa0лишь\xa0о\xa0том, как\xa0поскорее попасть домой. Но\xa0вернувшись в\xa0домик Лены, он\xa0видит, что\xa0она умирает...\n',
                 'scr1':'git_screens/dwl (1).png',
                 'scr2':'git_screens/dwl (2).png',
                 'scr3':'git_screens/dwl (3).png'
                 },
         'vkun' : {
-                'desc':'Заблудившись в тумане, молодой солдат, находит вход в мифический, кишащий монстрами лагерь...',
+                'desc':'\nЗаблудившись в\xa0тумане, молодой солдат находит мифический, кишащий монстрами лагерь...\n',
                 'scr1':'git_screens/vkun (1).png',
                 'scr2':'git_screens/vkun (2).png',
                 'scr3':'git_screens/vkun (3).png'
                 },
         'ev' : {
-                'desc':'Все мы уже давно хорошо знаем историю Семёна, переживавшего в "Совёнке" многочисленные циклы с разными исходами и результатами. Мы слышали множество вариантов предысторий и продолжений, альтернативных взглядов на старые события. И вот ещё один из них. Что будет, если в лагерь вместе с Семёном попадёт кто-то ещё? Человек, частично похожий на него, но при этом абсолютный ему антипод. Как он проживёт эти 7 дней и какое место займёт в них Семён? Узнаете, познакомившись с проектом "Бесконечные Каникулы". ',
+                'desc':'\nВсе мы хорошо знаем историю Семёна, пережившего в\xa0«Совёнке» множество циклов с\xa0различными исходами. Мы\xa0слышали массу вариантов предыстории и\xa0продолжения, альтернативных взглядов на\xa0произошедшие события. Этот\xa0рассказ —\xa0один из\xa0таких вариантов.\n\nЧто\xa0будет, если\xa0вместе с\xa0Семёном в\xa0лагерь попадёт кто-то\xa0ещё? Человек, частично похожий на\xa0него, но\xa0при\xa0этом его абсолютный антипод. Как\xa0он проживёт эти 7\xa0дней, и\xa0какое место займёт в\xa0них Семён? Узнаете, познакомившись с\xa0данным модом.\n',
                 'scr1':'git_screens/ev (1).png',
                 'scr2':'git_screens/ev (2).png',
                 'scr3':'git_screens/ev (3).png'
                 },
         'bm' : {
-                'desc':'Мод повествует о жизни обычного московского студента Михаила, живущего скучной жизнью в своей небольшой квартире. Михаил часто прогуливает занятия и живет только сам для себя. Сможет ли нашего героя изменить к лучшему неделя в "Совёнке"? Он и сам этого не знает. Но, попав в лагерь, он начинает замечать странные вещи, которые всерьез его настораживают и даже пугают. Чем закончится его летнее приключение? Об этом вы узнаете из нашего мода. ',
+                'desc':'\nЭто история обычного московского студента Михаила, живущего обычной скучной жизнью в\xa0небольшой квартире. Михаил\xa0часто прогуливает занятия и\xa0живёт, в\xa0общем-то, сам\xa0для\xa0себя. Попав в\xa0неизвестный для\xa0себя лагерь, он\xa0замечает странные вещи, которые всерьёз его\xa0настораживают и даже пугают.\n\nЧем\xa0закончится его летнее приключение? Сможет\xa0ли неделя в\xa0«Совёнке» изменить нашего героя к\xa0лучшему? Он\xa0и\xa0сам этого не\xa0знает.\n',
                 'scr1':'git_screens/bm (1).png',
                 'scr2':'git_screens/bm (2).png',
                 'scr3':'git_screens/bm (3).png'
                 },
         'st' : {
-                'desc':'Расскажет иную историю про парня по имени Семен. Который оказался не в самой обычной ситуации. - О чем мод? —-Об альтернативной реальности, в которую попал наш герой. Так же в моде есть множество отсылок из реальной жизни, с которым вы можете столкнуться. (И это не просто так, весь сценарий и исход событий будет зависеть от вас.) Оригинальный сценарий мода. Это стандартная семидневная смена в лагере Совёнок. В нем вы узнаете истинные помыслы главных героев игры. Выберитесь из цикла(С той которую вы выберите) А так же узнаете почему Семён потерял память.',
+                'desc':'\nОтличная от\xa0оригинальной история парня по\xa0имени Семён, который\xa0оказался не\xa0в\xa0самой обычной для\xa0него ситуации —\xa0в\xa0альтернативной реальности.\n\nМод\xa0повествует о\xa0стандартной семидневной смене в\xa0лагере «Совёнок». Здесь\xa0вы\xa0найдёте множество отсылок, с\xa0которыми можете столкнуться в\xa0реальной жизни (и\xa0это не\xa0просто\xa0так: весь сценарий и\xa0исход событий будет зависеть от\xa0вас), узнаете истинные помыслы героев игры, покинете цикл с\xa0той девушкой, которую\xa0выберите сами, а\xa0также узнаете, почему Семён потерял память.\n',
                 'scr1':'git_screens/st (1).png',
                 'scr2':'git_screens/st (2).png',
                 'scr3':'git_screens/st (3).png'
@@ -139,25 +139,25 @@ init:
                 'scr3':'git_screens/emk1 (3).png'
                 },
         'rs' : {
-                'desc':'Мод расскажет про альтернативное развитие событий уже известного всем романа. Пару неприятностей здесь всё-таки случилось. Но пугаться нечего, потому что почти у каждой истории есть хороший конец, и наша не исключение. \n Мод берёт своё начало сразу после окончания смены в лагере, где Семён прощается с Сэм.\n Модификация является представителем жанра триллер с отголосками романтики и драмы, а так же будет ориентироваться на вдумчивого читателя, который не ограничится написанным и раскроет ещё больше в своей фантазии.',
+                'desc':'\nМод расскажет об\xa0альтернативном развитии событий уже известного всем романа. Однако\xa0главного героя здесь всё-таки ждёт пара неприятностей. Но\xa0пугаться нечего, потому\xa0что почти у\xa0каждой истории есть хороший конец, и\xa0эта —\xa0не\xa0исключение. \n\n История берёт своё начало сразу после окончания смены в\xa0лагере, когда\xa0Семён прощается с\xa0Сэм. Это\xa0триллер с\xa0отголосками романтики и\xa0драмы, ориентированный на\xa0читателя вдумчивого и\xa0открытого к\xa0полёту фантазии.\n',
                 'scr1':'git_screens/rs (1).png',
                 'scr2':'git_screens/rs (2).png',
                 'scr3':'git_screens/rs (3).png'
                 },
         'hs' : {
-                'desc':'Сюжет данного мода разворачивается во время второго визита главного героя в "Совёнок". В отличии от предыдущих витков все пионеры не потеряли память и помнят, что произошло прошлым лето, а Семён сделал этот выбор сознательно. Старые знакомые, увлекательная компания, замечательное лето... но не всё так гладко. Вскоре все узнают, что эта смена будет не совсем обычной, и им придётся бороться за то, чтобы увидеть её конец.\n • Вас ждёт увлекательное приключение с большим многообразием ответвлений и различных выборов, события одного и того же дня могут разворачиваться совершенно по другому.\n • Общайтесь с персонажами, но помните: ваши действия могут как улучшить взаимоотношения, так и испортить их.\n • Взаимодействуйте с миром в интерактивных заданиях. Наведите курсор на изображение на экране, чтобы взаимодействовать с ним.\n • Со временем сюжет будет уже не похож на простую прогулку по лагерю, а превратиться в суровое выживание, где от ваших выборов будет зависеть, кто сможет дойти до конца, а кто - нет. \n • Каждое событие имеет свои чёткие причины и последствия. Поэтому не спешите делать выбор и задумайтесь. \n Углубитесь в прошлое и узнайте причину происходящих здесь кошмаров. Сможете ли вы пройти через это испытание невредимым и спасти дорогих и близких людей? По силам ли вам спасти всех и разблокировать Героическую концовку?',
+                'desc':'\nСюжет данного мода разворачивается во\xa0время второго визита главного героя в\xa0«Совёнок». Однако на\xa0этот\xa0раз все пионеры лагеря помнят события прошлого лета. Но,\xa0в\xa0отличие от\xa0остальных, Семён\xa0сделал этот\xa0выбор сознательно. Его\xa0ждут старые знакомые, увлекательная компания, замечательное лето... но\xa0не\xa0всё пройдёт гладко. Для\xa0героев мода эта\xa0смена окажется не\xa0совсем обычной, и\xa0им придётся бороться за\xa0то, чтобы увидеть её\xa0конец.\n\n • Погружайтесь в\xa0увлекательное приключение с\xa0большим количеством ответвлений и\xa0различных выборов (события одного и\xa0того\xa0же дня могут разворачиваться совершенно по-разному).\n • Общайтесь с\xa0персонажами, но помните: ваши действия могут как улучшить отношения с\xa0ними, так\xa0и\xa0испортить.\n • Взаимодействуйте с\xa0миром в\xa0интерактивных заданиях (наводите курсор на\xa0изображение на\xa0экране, чтобы взаимодействовать с\xa0элементами сцены).\n • Со\xa0временем сюжет мода перестанет быть похожим на\xa0простую прогулку по\xa0лагерю и\xa0превратится в\xa0суровую игру на\xa0выживание, где\xa0от\xa0ваших действий будет зависеть, кто\xa0из\xa0героев сможет дойти до\xa0конца смены. \n • Каждое событие имеет свои чёткие причины и\xa0последствия. Поэтому не\xa0спешите и\xa0хорошенько обдумывайте каждое своё\xa0решение. \n\n Углубитесь в\xa0прошлое и\xa0узнайте причину происходящих в\xa0лагере кошмаров. Сможет\xa0ли Семён пройти через\xa0это\xa0испытание и\xa0остаться невредимым? По\xa0силам\xa0ли ему спасти дорогих и\xa0близких\xa0себе людей, а\xa0вам —\xa0разблокировать Героическую концовку?\n',
                 'scr1':'git_screens/hs (1).png',
                 'scr2':'git_screens/hs (2).png',
                 'scr3':'git_screens/hs (3).png'
                 },
         'idnh' : {
-                'desc':'Наш главный герой, Иван Смирнов, обычный ученик колледжа на четвёртом году обучения, которому приспичило не спать четверо суток и играть в новеллу «Бесконечное лето». Казалось бы, с кем не бывает? Но в один момент, он засыпает у себя дома и видит сон, где двое мужчин обсуждают захоронение заживо какой-то девочки, что прокляла всю деревню. Проснувшись, Ваня идёт на кухню промыть нос, который был у него в крови, а потом неожиданно падает в обморок. Вдруг Ваня появляется в заброшеном пионерлагере «Совёнок» и… забывает всю свою прошлую жизнь.\n Пребывая малое количество времени в этом, казалось бы, райском и безлюдном месте, он натыкается на могилы умерших пионеров, в том числе и... свою! Что же случилось с ними и что он должен сделать, чтобы изменить череду событий в лучшую сторону? Однако его ещё и успевают убить… ',
+                'desc':'\nГлавный герой мода —\xa0Иван Смирнов, обычный\xa0ученик колледжа на\xa0четвёртом году обучения, которому\xa0приспичило не\xa0спать четверо суток подряд и\xa0играть в\xa0новеллу «Бесконечное лето». Казалось\xa0бы, с\xa0кем не\xa0бывает? Но\xa0однажды он засыпает у\xa0себя дома и\xa0видит сон, в\xa0котором двое мужчин обсуждают захоронение заживо какой-то девочки, что\xa0прокляла всю\xa0деревню. Проснувшись, Ваня идёт на\xa0кухню промыть затёкший кровью нос и\xa0неожиданно падает в\xa0обморок... \n\nПридя\xa0в\xa0себя, он\xa0оказывается в\xa0заброшенном пионерлагере «Совёнок». Ваня забывает всю\xa0свою\xa0прошлую жизнь. Проведя в\xa0этом казалось\xa0бы райском и\xa0безлюдном месте какое-то время, он\xa0однажды натыкается на\xa0могилы умерших пионеров, в\xa0том\xa0числе и\xa0свою.\n\nЧто\xa0же случилось с\xa0ними? И\xa0что он должен сделать, чтобы изменить череду событий в\xa0лучшую сторону?\n',
                 'scr1':'git_screens/idnh (1).png',
                 'scr2':'git_screens/idnh (2).png',
                 'scr3':'git_screens/idnh (3).png'
                 },
         '8dl' : {
-                'desc':'\"7 дней лета (7дл)\" - модификация для \"Бесконечного лета\", представляющая собой альтернативный взгляд как на историю, так и на вселенную оригинальной игры. Включает в себя новый оригинальный сценарий, множество новых иллюстраций, а также почти полностью переосмысленное музыкальное сопровождение.',
+                'desc':'\nЭтот мод —\xa0альтернативный взгляд на\xa0историю и\xa0вселенную игры. Он\xa0содержит собственный оригинальный сценарий, множество новых иллюстраций, а\xa0также имеет почти\xa0полностью переосмысленное музыкальное сопровождение.\n',
                 'scr1':'git_screens/8dl (1).jpg',
                 'scr2':'git_screens/8dl (2).png',
                 'scr3':'git_screens/8dl (3).jpg'
@@ -166,17 +166,17 @@ init:
 
 
     $ mods_names = [
-    ('8dl', "Семь Дней Лета", "7dl_esgml_init.rpyc", "7dl.rpa", "7dl/", "https://gitlab.com/tsunderekun/esgml_mods/raw/master/7dl/7dl_esgml_init.rpyc", "https://gitlab.com/tsunderekun/esgml_mods/raw/master/7dl/7dl.rpa", git_destination),
+    ('8dl', "7 дней лета («амбальская» версия)", "7dl_esgml_init.rpyc", "7dl.rpa", "7dl/", "https://gitlab.com/tsunderekun/esgml_mods/raw/master/7dl/7dl_esgml_init.rpyc", "https://gitlab.com/tsunderekun/esgml_mods/raw/master/7dl/7dl.rpa", git_destination),
 
     ('dwl', "Дни с Леной", "git_dayswithlena.rpyc", "git_dayswithlena_res.rpa", "dayswithlena/", "https://github.com/tsunderekun/es_gitmods/raw/master/git_dayswithlena.rpyc", "https://github.com/tsunderekun/es_gitmods/raw/master/git_dayswithlena_res.rpa", git_destination),
 
-    ('vkun', "Совенок в тумане", "git_vkun_fog.rpyc", "VKUN_MOD.rpa", "vkun_fog/", "https://github.com/tsunderekun/es_gitmods/raw/master/git_vkun_fog.rpyc", "https://github.com/tsunderekun/es_gitmods/raw/master/VKUN_MOD.rpa", git_destination),
+    ('vkun', "Совёнок в тумане", "git_vkun_fog.rpyc", "VKUN_MOD.rpa", "vkun_fog/", "https://github.com/tsunderekun/es_gitmods/raw/master/git_vkun_fog.rpyc", "https://github.com/tsunderekun/es_gitmods/raw/master/VKUN_MOD.rpa", git_destination),
 
-    ('ev', "Бесконечные Каникулы", "git_vacations_base.rpyc", "git_vacations.rpa", "git_vacations/", "https://master.dl.sourceforge.net/project/esmgl-mods/git_vacations_base.rpyc", "https://master.dl.sourceforge.net/project/esmgl-mods/git_vacations.rpa", git_destination),
+    ('ev', "Бесконечные каникулы", "git_vacations_base.rpyc", "git_vacations.rpa", "git_vacations/", "https://master.dl.sourceforge.net/project/esmgl-mods/git_vacations_base.rpyc", "https://master.dl.sourceforge.net/project/esmgl-mods/git_vacations.rpa", git_destination),
 
-    ('bm', "Большая Ошибка", "git_bm_base.rpyc", "git_bm.rpa", "git_bm/", "https://gitlab.com/tsunderekun/esgml_mods/raw/master/git_bm/git_bm_base.rpyc", "https://gitlab.com/tsunderekun/esgml_mods/raw/master/git_bm/git_bm.rpa", git_destination),
+    ('bm', "Большая ошибка", "git_bm_base.rpyc", "git_bm.rpa", "git_bm/", "https://gitlab.com/tsunderekun/esgml_mods/raw/master/git_bm/git_bm_base.rpyc", "https://gitlab.com/tsunderekun/esgml_mods/raw/master/git_bm/git_bm.rpa", git_destination),
 
-    ('st', "Время Лета", "git_sumtime_base.rpyc", "git_sumtime.rpa", "git_sumtime/", "https://gitlab.com/tsunderekun/esgml_mods/raw/master/git_sumtime/git_sumtime_base.rpyc", "https://gitlab.com/tsunderekun/esgml_mods/raw/master/git_sumtime/git_sumtime.rpa", git_destination),
+    ('st', "Время лета", "git_sumtime_base.rpyc", "git_sumtime.rpa", "git_sumtime/", "https://gitlab.com/tsunderekun/esgml_mods/raw/master/git_sumtime/git_sumtime_base.rpyc", "https://gitlab.com/tsunderekun/esgml_mods/raw/master/git_sumtime/git_sumtime.rpa", git_destination),
 
     ('ls', "История Лены", "git_lena_story_base.rpyc", "git_lena_story.rpa", "git_lena_story/", "https://github.com/tsunderekun/es_gitmods/raw/master/git_lena_story_base.rpyc", "https://github.com/tsunderekun/es_gitmods/raw/master/git_lena_story.rpa", git_destination),
 
@@ -188,7 +188,7 @@ init:
 
     ('rs', "Чёрная страница из дневника Сэм", "rs_base.rpyc", "rs_common.rpa", "rs_base/", "https://gitlab.com/tsunderekun/esgml_mods/raw/master/git_rs/rs_base.rpyc", "https://gitlab.com/tsunderekun/esgml_mods/raw/master/git_rs/rs_common.rpa", git_destination),
 
-    ('hs', "Ужасное Лето", "hs_base.rpyc", "hs_common.rpa", "hs_base/", "https://gitlab.com/tsunderekun/esgml_mods/raw/master/git_hs/hs_base.rpyc", "https://gitlab.com/tsunderekun/esgml_mods/raw/master/git_hs/hs_common.rpa", git_destination),
+    ('hs', "Ужасное лето", "hs_base.rpyc", "hs_common.rpa", "hs_base/", "https://gitlab.com/tsunderekun/esgml_mods/raw/master/git_hs/hs_base.rpyc", "https://gitlab.com/tsunderekun/esgml_mods/raw/master/git_hs/hs_common.rpa", git_destination),
 
     ('idnh', "Re: I Do Not Have", "idnh_base.rpyc", "idnh_common.rpa", "idnh_base/", "https://gitlab.com/tsunderekun/esgml_mods/raw/master/git_idnh/idnh_base.rpyc", "https://gitlab.com/tsunderekun/esgml_mods/raw/master/git_idnh/idnh_common.rpa", git_destination),
     ]
@@ -222,7 +222,7 @@ screen non_supp_mod:
     window:
         xalign 0 yalign 0
         background "git_nfo"
-        text "Был удален более несовместимый мод \"[persistent.evn_deln]\"." xalign 0.5 yalign 0.45:
+        text "Был удалён более несовместимый мод \"[persistent.evn_deln]\"." xalign 0.5 yalign 0.45:
             style "esgml_nn"
         textbutton "Я понял. Продолжить." action [Function(renpy.call_in_new_context, 'esgml_countinue')] xalign 0.5 yalign 0.60 at git_img_b:
             style "esgml_bb"
@@ -247,7 +247,7 @@ screen knz_git_dwnl_menu:
             text "Everlasting Summer Git Mods Loader":
                         style "esgml_mmn"
             null height 10
-            text "Свободный репозиторий модов для Бесконечного Лета":
+            text "Свободный репозиторий модов «Бесконечного лета»":
                         style "esgml_mn"
 
     side "c r":
@@ -327,7 +327,7 @@ screen git_authors:
 
         null height 20
 
-        text "Загрузчик удаленных модов для Бесконечного лета. \nСоздан для того, чтобы вы могли играть в удаленные моды. \nА также, вы всегда можете помочь нам с их добавлением \nперейдя в официальную группу." text_align 0.0 xpos 0.025:
+        text "Загрузчик удалённых из\xa0мастерской Steam модов «Бесконечного лета».\nЕсли вы знаете мод, который мог\xa0бы пополнить нашу коллекцию, пожалуйста, напишите нам в\xa0официальную группу\xa0ВК." text_align 0.0 xpos 0.025:
                     style "esgml_nm"
 
         null height 20
@@ -360,7 +360,7 @@ screen git_authors:
 
         null height 20
 
-        textbutton "Проект распространяется под лицензией CC BY-NC-SA 4.0" xpos 0.025 action OpenURL('https://creativecommons.org/licenses/by-nc-sa/4.0/') at git_img_b:
+        textbutton "Проект распространяется по лицензии CC BY-NC-SA 4.0" xpos 0.025 action OpenURL('https://creativecommons.org/licenses/by-nc-sa/4.0/') at git_img_b:
             style "esgml_nm"
             text_style "esgml_nm"
 
@@ -387,14 +387,14 @@ screen git_modnfo(id, name, rpyc_f, rpa_f, rpyc_p, rpyc_l, rpa_l, destination):
                 textbutton 'Удалить' action [Function(knz_get_data, rpyc_p, rpyc_f, rpyc_l, rpa_f, rpa_l), Function(renpy.call_in_new_context, 'deleter')] at git_img_b:
                         style "esgml_bb"
                         text_style "esgml_bb"
-                textbutton 'Уже загружен':
+                textbutton '(уже загружен)':
                         style "esgml_bb"
                         text_style "esgml_bb"
             else:
                 textbutton 'Загрузить' action [Function(knz_get_data, rpyc_p, rpyc_f, rpyc_l, rpa_f, rpa_l), Function(renpy.call_in_new_context, 'run_down')] at git_img_b:
                         style "esgml_bb"
                         text_style "esgml_bb"
-                textbutton 'Не установлен':
+                textbutton '(не загружен)':
                         style "esgml_bb"
                         text_style "esgml_bb"
     side "c":
@@ -502,7 +502,7 @@ init python:
                 ch_real_2 = (ch_pr_mb / ch_full_1 * 100)
                 ch_real_1 = round(ch_real_2, 1)
                 ch_real = str(ch_real_1) #Item::progress = double(Item::bytes_processed) / Item::total_bytes * 100;
-                ch_pr = "Загружено: " + ch_pr_st  + " МБайт из " + ch_full + " МБайт " + ch_real + "%"
+                ch_pr = "Загружено " + ch_pr_st  + " из " + ch_full + " МБ (" + ch_real + "%)"
 
                 chunk = response.read(CHUNK)
                 if not chunk:
@@ -514,7 +514,7 @@ init python:
         ch_pr_mb = (ch_pr_b / 1000) / 1000
         ch_pr_r = round(ch_pr_mb, 2)
         ch_pr_st = str(ch_pr_r)
-        ch_pr = "Загружено: " + ch_pr_st + " МБайт из " + ch_full + " МБайт " + ch_real + "%"
+        ch_pr = "Загружено " + ch_pr_st + " из " + ch_full + " МБ (" + ch_real + "%)"
 
 
     def knz_git_mod_clean(baserpa, mfolder):
@@ -522,15 +522,15 @@ init python:
         ch_pr = ''
         shutil.rmtree(git_destination + mfolder, ignore_errors=True, onerror=None)
         renpy.hide_screen('knz_git_dwnl_menu')
-        nfo_text = 'Удаление'
-        m_nfo_text = 'Выполняется удаление указанного мода, ожидайте...'
+        nfo_text = 'Удаление...'
+        m_nfo_text = 'Выполняется удаление указанного мода, ожидайте.'
         renpy.show_screen('knz_info_screen', nfo_text, m_nfo_text)
         renpy.pause (1, hard=True)
         try:
             persistent.del_baserpa = git_destination + baserpa
             persistent.unbaserpa = baserpa[:-4]
             renpy.pause (2, hard=True)
-            nfo_text = 'Перезагрузка'
+            nfo_text = 'Перезагрузка...'
             m_nfo_text = 'Ожидайте, пожалуйста.'
             renpy.hide_screen('knz_info_screen')
             renpy.show_screen('knz_info_screen', nfo_text, m_nfo_text)
@@ -539,7 +539,7 @@ init python:
         except OSError, e:
             renpy.hide_screen('knz_info_screen')
             nfo_text = 'Ошибка!'
-            m_nfo_text = 'Мы не знаем, как это произошло... Возможно ошибка на сервере.\nМожет быть, у вас проблемы c атрибутами папок...'
+            m_nfo_text = 'Возможно, у\xa0вас проблемы с\xa0интернет-соединением, неверно настроен доступ\nк папкам Steam или\xa0неизвестная ошибка на\xa0сервере.'
             renpy.show_screen('knz_info_screen', nfo_text, m_nfo_text)
             renpy.pause (5, hard=True)
             renpy.utter_restart()
