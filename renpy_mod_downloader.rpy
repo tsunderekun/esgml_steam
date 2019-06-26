@@ -1,6 +1,7 @@
 init:
+    $ import repoparser
     $ mods["knz_dwnl_git"]=u"{font=res/esgml_new.otf}Everlasting Summer GitHub Mods Loader{/font}"
-    $ esgml_ver = 'Electron 2.8a'
+    $ esgml_ver = 'Electron 3.11 for Workgroups'
     $ ch_pr = ''
     $ ready_ma = False
     $ ready_m = False
@@ -145,7 +146,7 @@ init:
                 'scr3':'git_screens/rs (3).png'
                 },
         'hs' : {
-                'desc':'\nСюжет данного мода разворачивается во\xa0время второго визита главного героя в\xa0«Совёнок». Однако на\xa0этот\xa0раз все пионеры лагеря помнят события прошлого лета. Но,\xa0в\xa0отличие от\xa0остальных, Семён\xa0сделал этот\xa0выбор сознательно. Его\xa0ждут старые знакомые, увлекательная компания, замечательное лето... но\xa0не\xa0всё пройдёт гладко. Для\xa0героев мода эта\xa0смена окажется не\xa0совсем обычной, и\xa0им придётся бороться за\xa0то, чтобы увидеть её\xa0конец.\n\n • Погружайтесь в\xa0увлекательное приключение с\xa0большим количеством ответвлений и\xa0различных выборов (события одного и\xa0того\xa0же дня могут разворачиваться совершенно по-разному).\n • Общайтесь с\xa0персонажами, но помните: ваши действия могут как улучшить отношения с\xa0ними, так\xa0и\xa0испортить.\n • Взаимодействуйте с\xa0миром в\xa0интерактивных заданиях (наводите курсор на\xa0изображение на\xa0экране, чтобы взаимодействовать с\xa0элементами сцены).\n • Со\xa0временем сюжет мода перестанет быть похожим на\xa0простую прогулку по\xa0лагерю и\xa0превратится в\xa0суровую игру на\xa0выживание, где\xa0от\xa0ваших действий будет зависеть, кто\xa0из\xa0героев сможет дойти до\xa0конца смены. \n • Каждое событие имеет свои чёткие причины и\xa0последствия. Поэтому не\xa0спешите и\xa0хорошенько обдумывайте каждое своё\xa0решение. \n\n Углубитесь в\xa0прошлое и\xa0узнайте причину происходящих в\xa0лагере кошмаров. Сможет\xa0ли Семён пройти через\xa0это\xa0испытание и\xa0остаться невредимым? По\xa0силам\xa0ли ему спасти дорогих и\xa0близких\xa0себе людей, а\xa0вам —\xa0разблокировать Героическую концовку?\n',
+                'desc':'\nСюжет данного мода разворачивается во\xa0время второго визита главного героя в\xa0«Совёнок». Однако на\xa0этот\xa0раз все пионеры лагеря помнят события прошлого лета. Но,\xa0в\xa0отличие от\xa0остальных, Семён\xa0сделал этот\xa0выбор сознательно. Его\xa0ждут старые знакомые, увлекательная компания, замечательное лето... но\xa0не\xa0всё пройдёт гладко. Для\xa0героев мода эта\xa0смена окажется не\xa0совсем обычной, и\xa0им придётся бороться за\xa0то, чтобы увидеть её\xa0конец.\n',
                 'scr1':'git_screens/hs (1).png',
                 'scr2':'git_screens/hs (2).png',
                 'scr3':'git_screens/hs (3).png'
@@ -162,17 +163,19 @@ init:
                 'scr2':'git_screens/8dl (2).png',
                 'scr3':'git_screens/8dl (3).jpg'
                 },
+        'user_repo' : {
+                'desc':'\nЭтот мод предоставлен сторонним репозиторием, так что использование описания невозможно...',
+                'scr1': 't.png',
+                'scr2': 't.png',
+                'scr3': 't.png'
+                },
     }
 
 
     $ mods_names = [
-    ('8dl', "7 дней лета («амбальская» версия)", "7dl_esgml_init.rpyc", "7dl.rpa", "7dl/", "https://gitlab.com/tsunderekun/esgml_mods/raw/master/7dl/7dl_esgml_init.rpyc", "https://gitlab.com/tsunderekun/esgml_mods/raw/master/7dl/7dl.rpa", git_destination),
-
     ('dwl', "Дни с Леной", "git_dayswithlena.rpyc", "git_dayswithlena_res.rpa", "dayswithlena/", "https://github.com/tsunderekun/es_gitmods/raw/master/git_dayswithlena.rpyc", "https://github.com/tsunderekun/es_gitmods/raw/master/git_dayswithlena_res.rpa", git_destination),
 
     ('vkun', "Совёнок в тумане", "git_vkun_fog.rpyc", "VKUN_MOD.rpa", "vkun_fog/", "https://github.com/tsunderekun/es_gitmods/raw/master/git_vkun_fog.rpyc", "https://github.com/tsunderekun/es_gitmods/raw/master/VKUN_MOD.rpa", git_destination),
-
-    ('ev', "Бесконечные каникулы", "git_vacations_base.rpyc", "git_vacations.rpa", "git_vacations/", "https://master.dl.sourceforge.net/project/esmgl-mods/git_vacations_base.rpyc", "https://master.dl.sourceforge.net/project/esmgl-mods/git_vacations.rpa", git_destination),
 
     ('bm', "Большая ошибка", "git_bm_base.rpyc", "git_bm.rpa", "git_bm/", "https://gitlab.com/tsunderekun/esgml_mods/raw/master/git_bm/git_bm_base.rpyc", "https://gitlab.com/tsunderekun/esgml_mods/raw/master/git_bm/git_bm.rpa", git_destination),
 
@@ -192,6 +195,8 @@ init:
 
     ('idnh', "Re: I Do Not Have", "idnh_base.rpyc", "idnh_common.rpa", "idnh_base/", "https://gitlab.com/tsunderekun/esgml_mods/raw/master/git_idnh/idnh_base.rpyc", "https://gitlab.com/tsunderekun/esgml_mods/raw/master/git_idnh/idnh_common.rpa", git_destination),
     ]
+    $ global mods_names
+    $ repoparser.txtlist(git_destination, mods_names)
 
 
 
@@ -440,6 +445,7 @@ init python:
     from threading import Thread
     import os as git_os
     import shutil
+
 
     kprogress = None
     knz_rpyc_p = None
