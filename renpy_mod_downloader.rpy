@@ -1,5 +1,4 @@
 init:
-    $ import repoparser
     $ mods["knz_dwnl_git"]=u"{font=res/esgml_new.otf}Everlasting Summer GitHub Mods Loader{/font}"
     $ esgml_ver = '4.0 Isatis'
     $ ch_pr = ''
@@ -150,7 +149,7 @@ screen knz_git_dwnl_menu:
                     elif str(id) in git_queue:
                         add 'res/git_qu_inactive.png' xalign 0.01
                     else:
-                        imagebutton auto 'res/git_qu_%s.png' action [Function(git_queue.append, id), SetScreenVariable("git_not", git_info[id]["name"] + '\nдобавлен в очередь загрузки')] at git_img_b xalign 0.01
+                        imagebutton auto 'res/git_qu_%s.png' action [Function(git_queue.append, id), SetVariable("git_not", git_info[id]["name"] + '\nдобавлен в очередь загрузки'), Show("git_notice", dissolve)] at git_img_b xalign 0.01
                     #
                     #
                     if str(id) in persistent.git_mod_installed:
@@ -168,37 +167,43 @@ screen knz_git_dwnl_menu:
 
     hbox yalign 0.975 xalign 0.5 spacing 96:
 
-        imagebutton auto 'res/git_main_%s.png' action [SetField(config, "mouse", {'default' : [('images/misc/mouse/1.png', 0, 0)]}), Return("mm")] hovered SetScreenVariable("git_not1", "Вернуться в главное меню") unhovered SetScreenVariable("git_not1", " ") at git_img_b
+        imagebutton auto 'res/git_main_%s.png' action [SetField(config, "mouse", {'default' : [('images/misc/mouse/1.png', 0, 0)]}), Return("mm")] hovered [SetVariable("git_not1", "Вернуться в главное меню"), Show("git_notice_d", dissolve)] unhovered [SetScreenVariable("git_not1", " "), Hide("git_notice_d", dissolve)] at git_img_b
 
-        imagebutton auto 'res/git_qu1_%s.png' action [Function(renpy.call_in_new_context, 'go_to_git_qu')] hovered SetScreenVariable("git_not1", "Очередь загрузки") unhovered SetScreenVariable("git_not1", " ") at git_img_b
+        imagebutton auto 'res/git_qu1_%s.png' action [Function(renpy.call_in_new_context, 'go_to_git_qu')] hovered [SetVariable("git_not1", "Очередь загрузки"), Show("git_notice_d", dissolve)] unhovered [SetScreenVariable("git_not1", " "), Hide("git_notice_d", dissolve)] at git_img_b
 
         if 'NLT_tl' in globals():
-            imagebutton auto 'res/git_nlt_%s.png' action [Function(renpy.call_in_new_context, 'NLT_toolbox')] hovered SetScreenVariable("git_not1", "Запустить New Life Team ModPack") unhovered SetScreenVariable("git_not1", " ") at git_img_b
+            imagebutton auto 'res/git_nlt_%s.png' action [Function(renpy.call_in_new_context, 'NLT_toolbox')] hovered [SetVariable("git_not1", "Запустить New Life Team ModPack"), Show("git_notice_d", dissolve)] unhovered [SetScreenVariable("git_not1", " "), Hide("git_notice_d", dissolve)] at git_img_b
 
         else:
-            imagebutton auto 'res/git_nlt_%s.png' action [OpenURL('steam://url/CommunityFilePage/847728687')] hovered SetScreenVariable("git_not1", "Загрузить New Life Team ModPack") unhovered SetScreenVariable("git_not1", " ") at git_img_b
+            imagebutton auto 'res/git_nlt_%s.png' action [OpenURL('steam://url/CommunityFilePage/847728687')] hovered [SetVariable("git_not1", "Загрузить New Life Team ModPack"), Show("git_notice_d", dissolve)] unhovered [SetScreenVariable("git_not1", " "), Hide("git_notice_d", dissolve)] at git_img_b
 
-        imagebutton auto 'res/git_rst_%s.png' action [Function(renpy.utter_restart)] hovered SetScreenVariable("git_not1", "Перезагрузка") unhovered SetScreenVariable("git_not1", " ") at git_img_b
+        imagebutton auto 'res/git_rst_%s.png' action [Function(renpy.utter_restart)]  hovered [SetVariable("git_not1", "Перезагрузить"), Show("git_notice_d", dissolve)] unhovered [SetScreenVariable("git_not1", " "), Hide("git_notice_d", dissolve)] at git_img_b
 
-        imagebutton auto 'res/git_nfo_%s.png' action [Function(renpy.call_in_new_context, 'go_to_git_authors')] hovered SetScreenVariable("git_not1", "Информация о моде") unhovered SetScreenVariable("git_not1", " ") at git_img_b
+        imagebutton auto 'res/git_nfo_%s.png' action [Function(renpy.call_in_new_context, 'go_to_git_authors')] hovered [SetVariable("git_not1", "Информация о моде"), Show("git_notice_d", dissolve)] unhovered [SetScreenVariable("git_not1", " "), Hide("git_notice_d", dissolve)] at git_img_b
 
-        imagebutton auto 'res/git_exit_%s.png' action [Quit (confirm=False)] hovered SetScreenVariable("git_not1", "Выйти из БЛ") unhovered SetScreenVariable("git_not1", " ") at git_img_b
+        imagebutton auto 'res/git_exit_%s.png' action [Quit (confirm=False)]  hovered [SetVariable("git_not1", "Выйти из БЛ"), Show("git_notice_d", dissolve)] unhovered [SetScreenVariable("git_not1", " "), Hide("git_notice_d", dissolve)] at git_img_b
 
 
-    default git_not = ''
-    default git_not1 = ''
-    vbox xalign 0.5 yalign 0.5:
+    # default git_not1 = ''
+
+    # vbox xalign 0.5 yalign 0.875:
+    #     textbutton git_not1:
+    #         style "esgml_not"
+    #         text_style "esgml_not"
+
+screen git_notice():
+    frame background Frame(Solid("0008")) xalign 0.5 yalign 0.5 left_padding 25 right_padding 25 bottom_padding 25 top_padding 25:
         textbutton git_not:
             style "esgml_not"
             text_style "esgml_not"
+    timer 5.0 action Hide("git_notice", dissolve)
 
-    vbox xalign 0.5 yalign 0.875:
+screen git_notice_d():
+    frame background Frame(Solid("0008")) xalign 0.5 yalign 0.875 left_padding 10 right_padding 10 bottom_padding 10 top_padding 10:
         textbutton git_not1:
             style "esgml_not"
             text_style "esgml_not"
-
-
-    timer 5.0 action SetScreenVariable("git_not",  ' ')
+    timer 5.0 action Hide("git_notice", dissolve)
 
 label go_to_git_authors:
     if _return == "mm":
