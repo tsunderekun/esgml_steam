@@ -1,6 +1,6 @@
 init:
     $ mods["knz_dwnl_git"]=u"{font=res/esgml_new.otf}Everlasting Summer GitHub Mods Loader{/font}"
-    $ esgml_ver = '4.0 Isatis'
+    $ esgml_ver = '4.0.5 Isatis (Beta)'
     $ ch_pr = ''
     $ ready_ma = False
     $ ready_m = False
@@ -72,6 +72,9 @@ init:
     $ style.esgml_not = Style(style.esgml_nn)
     $ style.esgml_not.size = 48
     $ style.esgml_not.outlines = [(1, "#000", 0, 0)] #dialogue text
+
+    $ style.esgml_notb = Style(style.esgml_not)
+    $ style.esgml_notb.size = 60
 
     $ style.esgml_mn = Style(style.esgml_nm)
     $ style.esgml_mn.size = 40
@@ -157,7 +160,7 @@ screen knz_git_dwnl_menu:
                     else:
                         add 'res/git_del_inactive.png' xalign 0
 
-                    textbutton git_info[id]["name"] ypos -0.2125 action [Show('git_modnfo', dissolve, id)] at git_img_b:
+                    textbutton git_info[id]["name"] ypos -0.2125 action [Hide("knz_git_dwnl_menu", dissolve), Show('git_modnfo', dissolve, id)] at git_img_b:
                         style "esgml_mm"
                         text_style "esgml_mm"
 
@@ -171,11 +174,7 @@ screen knz_git_dwnl_menu:
 
         imagebutton auto 'res/git_qu1_%s.png' action [Function(renpy.call_in_new_context, 'go_to_git_qu')] hovered [SetVariable("git_not1", "Очередь загрузки"), Show("git_notice_d", dissolve)] unhovered [SetScreenVariable("git_not1", " "), Hide("git_notice_d", dissolve)] at git_img_b
 
-        if 'NLT_tl' in globals():
-            imagebutton auto 'res/git_nlt_%s.png' action [Function(renpy.call_in_new_context, 'NLT_toolbox')] hovered [SetVariable("git_not1", "Запустить New Life Team ModPack"), Show("git_notice_d", dissolve)] unhovered [SetScreenVariable("git_not1", " "), Hide("git_notice_d", dissolve)] at git_img_b
-
-        else:
-            imagebutton auto 'res/git_nlt_%s.png' action [OpenURL('steam://url/CommunityFilePage/847728687')] hovered [SetVariable("git_not1", "Загрузить New Life Team ModPack"), Show("git_notice_d", dissolve)] unhovered [SetScreenVariable("git_not1", " "), Hide("git_notice_d", dissolve)] at git_img_b
+        imagebutton auto 'res/git_nlt_%s.png' action [Show("git_debug", dissolve)] hovered [SetVariable("git_not1", "Меню отладки"), Show("git_notice_d", dissolve)] unhovered [SetScreenVariable("git_not1", " "), Hide("git_notice_d", dissolve)] at git_img_b
 
         imagebutton auto 'res/git_rst_%s.png' action [Function(renpy.utter_restart)]  hovered [SetVariable("git_not1", "Перезагрузить"), Show("git_notice_d", dissolve)] unhovered [SetScreenVariable("git_not1", " "), Hide("git_notice_d", dissolve)] at git_img_b
 
@@ -203,17 +202,79 @@ screen git_notice_d():
         textbutton git_not1:
             style "esgml_not"
             text_style "esgml_not"
-    timer 5.0 action Hide("git_notice", dissolve)
+
+screen git_debug():
+    frame background Frame(Solid("0008")) xalign 0.5 yalign 0.5 left_padding 25 right_padding 25 bottom_padding 25 top_padding 25:
+        vbox:
+            textbutton "Меню отладки" xalign 0.5:
+                style "esgml_notb"
+                text_style "esgml_notb"
+            null height 25
+            textbutton "Очистить индексы установленных модов" xalign 0.5 action [Hide("git_debug", dissolve), Function(git_clear_index)] at git_img_b:
+                style "esgml_not"
+                text_style "esgml_not"
+            textbutton "Ручное управление индексами" xalign 0.5 action [Hide("git_debug", dissolve), Function(renpy.call_in_new_context, 'go_to_git_manual_index')] at git_img_b:
+                style "esgml_not"
+                text_style "esgml_not"
+            if 'NLT_tl' in globals():
+                textbutton "Запустить New Life Team ModPack" xalign 0.5 action [Function(renpy.call_in_new_context, 'NLT_toolbox')] at git_img_b:
+                    style "esgml_not"
+                    text_style "esgml_not"
+            else:
+                textbutton "Загрузить New Life Team ModPack" xalign 0.5 action [OpenURL('steam://url/CommunityFilePage/847728687')] at git_img_b:
+                    style "esgml_not"
+                    text_style "esgml_not"
+            null height 25
+            textbutton "Назад" xalign 0.5 action Hide("git_debug", dissolve) at git_img_b:
+                style "esgml_not"
+                text_style "esgml_not"
+
+screen git_debug_id(id):
+    frame background Frame(Solid("0008")) xalign 0.5 yalign 0.5 left_padding 25 right_padding 25 bottom_padding 25 top_padding 25:
+        vbox xalign 0.5:
+            textbutton "Операции с индексом" xalign 0.5:
+                style "esgml_notb"
+                text_style "esgml_notb"
+            null height 25
+            hbox xalign 0.5 spacing 48:
+                if str(id) in persistent.git_mod_installed:
+                    textbutton "Удалить" action [Function(git_manual_index, id, 0), Hide("git_debug_id", dissolve)] at git_img_b:
+                        style "esgml_not"
+                        text_style "esgml_not"
+                    textbutton "(есть в списке)" at git_img_b:
+                        style "esgml_not"
+                        text_style "esgml_not"
+                else:
+                    textbutton "Добавить" action [Function(git_manual_index, id, 1), Hide("git_debug_id", dissolve)] at git_img_b:
+                        style "esgml_not"
+                        text_style "esgml_not"
+                    textbutton "(нет в списке)" at git_img_b:
+                        style "esgml_not"
+                        text_style "esgml_not"
+            null height 25
+            textbutton "Назад" xalign 0.5 action Hide("git_debug_id", dissolve) at git_img_b:
+                style "esgml_not"
+                text_style "esgml_not"
+
+
 
 label go_to_git_authors:
+    hide screen knz_git_dwnl_menu
     if _return == "mm":
         return
     call screen git_authors with fade
 
 label go_to_git_qu:
+    hide screen knz_git_dwnl_menu
     if _return == "mm":
         return
     call screen git_qus with fade
+
+label go_to_git_manual_index:
+    hide screen knz_git_dwnl_menu
+    if _return == "mm":
+        return
+    call screen git_manual_index with fade
 
 screen git_qus:
     modal False
@@ -250,6 +311,31 @@ screen git_qus:
         textbutton 'Назад' action [Show('knz_git_dwnl_menu', dissolve), Hide('git_qus')] at git_img_b:
                 style "esgml_bb"
                 text_style "esgml_bb"
+
+screen git_manual_index:
+    modal False
+    add "git_nfo"
+    vbox xpos 0.05 ypos 0.05 yfill:
+                    text "Ручное управление индексами":
+                                style "esgml_nn"
+                    side "c r":
+                        area (0.05, 0.05, 0.7, 0.675)
+                        viewport id "git_ind_menu":
+                            draggable True
+                            mousewheel True
+                            scrollbars None
+                            has vbox
+                            for id in git_mod_lists:
+                                textbutton str(id) + " " + git_info[id]["name"] ypos -0.2125 action Show("git_debug_id", dissolve, id) at git_img_b:
+                                    style "esgml_mm"
+                                    text_style "esgml_mm"
+
+    hbox yalign 0.975 xalign 0.5 spacing 96:
+        textbutton 'Назад' action [Show('knz_git_dwnl_menu', dissolve), Hide('git_qus')] at git_img_b:
+                style "esgml_bb"
+                text_style "esgml_bb"
+
+
 screen git_authors:
     modal False
     add "git_nfo"
@@ -390,6 +476,27 @@ init python:
         global tindex
 
     kprogress = None
+
+    def git_clear_index():
+        persistent.git_mod_installed = []
+        git_not = "Индексы успешно очищены"
+        global git_not
+        renpy.show_screen('git_notice')
+        # git_not = ""
+        # global git_not
+
+    def git_manual_index(id, mode):
+        if mode == 1:
+            persistent.git_mod_installed.append(id)
+            git_not = "Индекс успешно добавлен"
+        if mode == 0:
+            persistent.git_mod_installed.remove(id)
+            git_not = "Индекс успешно очищен"
+        global git_not
+        renpy.show_screen('git_notice')
+        # git_not = ""
+        # global git_not
+
 
     def knz_dnwl_mod(filename, filelink):
 

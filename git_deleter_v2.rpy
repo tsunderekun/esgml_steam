@@ -41,6 +41,7 @@ init python:
 
         import os as git_os
         import urlparse
+        persistent.git_mod_installed.remove(tindex)
         for x in links:
             url = x
             a = urlparse.urlparse(url)
@@ -50,7 +51,6 @@ init python:
             knz_git_mod_clean(name)
             if file_extension == ".rpyc":
                 knz_git_rpyc_clean(tindex)
-        persistent.git_mod_installed.remove(tindex)
 
 label deleter:
     stop music fadeout 5
