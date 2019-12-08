@@ -1,6 +1,6 @@
 init:
-    $ mods["knz_dwnl_git"]=u"{font=res/esgml_new.otf}Everlasting Summer GitHub Mods Loader{/font}"
-    $ esgml_ver = '4.0.5 Isatis (Beta)'
+    $ mods["knz_dwnl_git"]=u"{font=res/esgml_new.ttf}Everlasting Summer GitHub Mods Loader{/font}"
+    $ esgml_ver = '4.0.6 RC1 Isatis'
     $ ch_pr = ''
     $ ready_ma = False
     $ ready_m = False
@@ -49,7 +49,7 @@ init:
     $ style.esgml_mm.color = (255, 255, 255, 100)
     $ style.esgml_mm.hover_color = (255, 255, 255, 55)
     $ style.esgml_mm.size = 55
-    $ style.esgml_mm.font = "res/esgml_new.otf"
+    $ style.esgml_mm.font = "res/esgml_new.ttf"
     $ style.esgml_mm.text_align = 0.5
 
     $ style.esgml_bb = Style(style.esgml_mm)
@@ -57,7 +57,7 @@ init:
     $ style.esgml_bb.size = 72
 
     $ style.esgml_ii = Style(style.esgml_mm)
-    $ style.esgml_ii.font = "res/esgml_descr.otf"
+    $ style.esgml_ii.font = "res/esgml_descr.ttf"
     $ style.esgml_ii.text_align = 0.5
     $ style.esgml_ii.size = 32
     $ style.esgml_ii.color = (255, 255, 255, 100)
@@ -94,6 +94,13 @@ init:
 label knz_dwnl_git:
     window hide
     $ config.mouse = {'default' : [("res/cursor.png", 0, 0)]}
+    show black with dspr
+    show image "res/git_warn.png" with dspr
+    $ renpy.pause(5)
+    show black with dspr
+    play sound 'res/git_start.ogg'
+    show image "res/git_splash.png" with dspr
+    $ renpy.pause(2)
     play music 'res/git_main.ogg' fadein 5
     if _return == "mm":
         $ config.mouse = {'default' : [("images/misc/mouse/1.png", 0, 0)]}
@@ -124,14 +131,14 @@ screen knz_git_dwnl_menu:
     window:
         xalign 0 yalign 0
         background "git_nfo"
-        vbox xpos 0.0725 ypos 0.175 yfill:
+        vbox xpos 0.05 ypos 0.175 yfill:
 
             text "Everlasting Summer Git Mods Loader":
                         style "esgml_mmn"
             null height 10
             text "Свободный репозиторий модов «Бесконечного лета»":
                         style "esgml_mn"
-    side "c r":
+    side "r":
         area (0.05, 0.20, 0.8, 0.675)
         viewport id "git_mods_menu":
             draggable True
@@ -167,20 +174,20 @@ screen knz_git_dwnl_menu:
                     # textbutton git_info[name]["name"] ypos -0.2125  action [Show('git_modnfo', dissolve, id)] at git_img_b:
                     #     style "esgml_mm"
                     #     text_style "esgml_mm"
+    frame background Frame(Solid("0008")) left_padding 25 right_padding 25 bottom_padding 20 top_padding 25 xalign 0.5 ypos 0.900 xminimum 1920 xmaximum 1920:
+        grid 6 1 spacing 96 xalign 0.5:
 
-    hbox yalign 0.975 xalign 0.5 spacing 96:
+            imagebutton auto 'res/git_main_%s.png' action [SetField(config, "mouse", {'default' : [('images/misc/mouse/1.png', 0, 0)]}), MainMenu(confirm=False)] hovered [SetVariable("git_not1", "Вернуться в главное меню"), Show("git_notice_d", dissolve)] unhovered [SetScreenVariable("git_not1", " "), Hide("git_notice_d", dissolve)] at git_img_b
 
-        imagebutton auto 'res/git_main_%s.png' action [SetField(config, "mouse", {'default' : [('images/misc/mouse/1.png', 0, 0)]}), Return("mm")] hovered [SetVariable("git_not1", "Вернуться в главное меню"), Show("git_notice_d", dissolve)] unhovered [SetScreenVariable("git_not1", " "), Hide("git_notice_d", dissolve)] at git_img_b
+            imagebutton auto 'res/git_qu1_%s.png' action [Function(renpy.call_in_new_context, 'go_to_git_qu')] hovered [SetVariable("git_not1", "Очередь загрузки"), Show("git_notice_d", dissolve)] unhovered [SetScreenVariable("git_not1", " "), Hide("git_notice_d", dissolve)] at git_img_b
 
-        imagebutton auto 'res/git_qu1_%s.png' action [Function(renpy.call_in_new_context, 'go_to_git_qu')] hovered [SetVariable("git_not1", "Очередь загрузки"), Show("git_notice_d", dissolve)] unhovered [SetScreenVariable("git_not1", " "), Hide("git_notice_d", dissolve)] at git_img_b
+            imagebutton auto 'res/git_nlt_%s.png' action [Show("git_debug", dissolve)] hovered [SetVariable("git_not1", "Меню отладки"), Show("git_notice_d", dissolve)] unhovered [SetScreenVariable("git_not1", " "), Hide("git_notice_d", dissolve)] at git_img_b
 
-        imagebutton auto 'res/git_nlt_%s.png' action [Show("git_debug", dissolve)] hovered [SetVariable("git_not1", "Меню отладки"), Show("git_notice_d", dissolve)] unhovered [SetScreenVariable("git_not1", " "), Hide("git_notice_d", dissolve)] at git_img_b
+            imagebutton auto 'res/git_rst_%s.png' action [Function(renpy.utter_restart)]  hovered [SetVariable("git_not1", "Перезагрузить"), Show("git_notice_d", dissolve)] unhovered [SetScreenVariable("git_not1", " "), Hide("git_notice_d", dissolve)] at git_img_b
 
-        imagebutton auto 'res/git_rst_%s.png' action [Function(renpy.utter_restart)]  hovered [SetVariable("git_not1", "Перезагрузить"), Show("git_notice_d", dissolve)] unhovered [SetScreenVariable("git_not1", " "), Hide("git_notice_d", dissolve)] at git_img_b
+            imagebutton auto 'res/git_nfo_%s.png' action [Function(renpy.call_in_new_context, 'go_to_git_authors')] hovered [SetVariable("git_not1", "Информация о моде"), Show("git_notice_d", dissolve)] unhovered [SetScreenVariable("git_not1", " "), Hide("git_notice_d", dissolve)] at git_img_b
 
-        imagebutton auto 'res/git_nfo_%s.png' action [Function(renpy.call_in_new_context, 'go_to_git_authors')] hovered [SetVariable("git_not1", "Информация о моде"), Show("git_notice_d", dissolve)] unhovered [SetScreenVariable("git_not1", " "), Hide("git_notice_d", dissolve)] at git_img_b
-
-        imagebutton auto 'res/git_exit_%s.png' action [Quit (confirm=False)]  hovered [SetVariable("git_not1", "Выйти из БЛ"), Show("git_notice_d", dissolve)] unhovered [SetScreenVariable("git_not1", " "), Hide("git_notice_d", dissolve)] at git_img_b
+            imagebutton auto 'res/git_exit_%s.png' action [Quit (confirm=False)]  hovered [SetVariable("git_not1", "Выйти из БЛ"), Show("git_notice_d", dissolve)] unhovered [SetScreenVariable("git_not1", " "), Hide("git_notice_d", dissolve)] at git_img_b
 
 
     # default git_not1 = ''
@@ -282,7 +289,7 @@ screen git_qus:
     vbox xpos 0.05 ypos 0.05 yfill:
                     text "Очередь загрузки модов":
                                 style "esgml_nn"
-                    side "c r":
+                    side "r":
                         area (0.05, 0.05, 0.7, 0.675)
                         viewport id "git_qu_menu":
                             draggable True
@@ -318,7 +325,7 @@ screen git_manual_index:
     vbox xpos 0.05 ypos 0.05 yfill:
                     text "Ручное управление индексами":
                                 style "esgml_nn"
-                    side "c r":
+                    side "r":
                         area (0.05, 0.05, 0.7, 0.675)
                         viewport id "git_ind_menu":
                             draggable True

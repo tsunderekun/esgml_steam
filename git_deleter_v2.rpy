@@ -1,5 +1,9 @@
 
 init python:
+    if persistent.git_mod_deleting == None:
+        persistent.git_mod_deleting = []
+    if persistent.git_mod_deleting_id == None:
+        persistent.git_mod_deleting_id = []
 
     def knz_git_mod_clean(baserpa):
         import os as git_os
@@ -12,11 +16,13 @@ init python:
         renpy.pause (1, hard=True)
         try:
             if git_os.path.isfile(str(git_destination + baserpa)):
-                try:
-                        renpy.config.archives.remove(baserpa[:-4])
-                except:
-                    pass
-                git_os.remove(str(git_destination + baserpa))
+                # try:
+                #         renpy.config.archives.remove(baserpa[:-4])
+                # except:
+                #     pass
+                # git_os.remove(str(git_destination + baserpa))
+                persistent.git_mod_deleting.append(str(git_destination + baserpa))
+                persistent.git_mod_deleting_id.append(baserpa[:-4])
 
             renpy.pause (2, hard=True)
             nfo_text = 'Файл удален.'
