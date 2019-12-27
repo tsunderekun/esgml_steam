@@ -25,7 +25,7 @@ init python:
                 persistent.git_mod_deleting_id.append(baserpa[:-4])
 
             renpy.pause (2, hard=True)
-            nfo_text = 'Файл удален.'
+            nfo_text = 'Файл удалён.'
             m_nfo_text = 'Ожидайте, пожалуйста.'
             renpy.hide_screen('knz_info_screen')
             renpy.show_screen('knz_info_screen', nfo_text, m_nfo_text)
