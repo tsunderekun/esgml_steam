@@ -31,7 +31,7 @@ init:
     }
     $ git_mod_lists.append('dwl')
 
-    $ git_links['bm'] = ("https://github.com/tsunderekun/es_gitmods/raw/master/git_vkun_fog.rpyc", "https://github.com/tsunderekun/es_gitmods/raw/master/VKUN_MOD.rpa")
+    $ git_links['bm'] = ("https://gitlab.com/tsunderekun/esgml_mods/raw/master/git_bm/git_bm_base.rpyc", "https://gitlab.com/tsunderekun/esgml_mods/raw/master/git_bm/git_bm.rpa")
     $ git_info['bm'] = {
     'name': "Большая ошибка",
     'desc': '\nЭто история обычного московского студента Михаила, живущего обычной скучной жизнью в\xa0небольшой квартире. Михаил\xa0часто прогуливает занятия и\xa0живёт, в\xa0общем-то, сам\xa0для\xa0себя. Попав в\xa0неизвестный для\xa0себя лагерь, он\xa0замечает странные вещи, которые всерьёз его\xa0настораживают и даже пугают.\n\nЧем\xa0закончится его летнее приключение? Сможет\xa0ли неделя в\xa0«Совёнке» изменить нашего героя к\xa0лучшему? Он\xa0и\xa0сам этого не\xa0знает.\n',

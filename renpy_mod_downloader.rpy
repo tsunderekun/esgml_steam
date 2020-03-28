@@ -1,6 +1,6 @@
 init:
     $ mods["knz_dwnl_git"]=u"{font=res/esgml_new.ttf}Everlasting Summer GitHub Mods Loader{/font}"
-    $ esgml_ver = '4.0.6 RC1 Isatis'
+    $ esgml_ver = '4.0.7 RC2 Isatis'
     $ ch_pr = ''
     $ ready_ma = False
     $ ready_m = False
