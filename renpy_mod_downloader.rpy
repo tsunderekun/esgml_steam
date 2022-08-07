@@ -510,7 +510,13 @@ init python:
         global ch_pr
         ch_pr = "Инициализация..."
         ready_ma = False
-        import urllib2
+        import urllib2, ssl
+        try:
+            ssl._create_unverified_context
+        except AttributeError:
+            pass
+        else:
+            ssl._create_default_https_context = ssl._create_unverified_context
         opener = urllib2.build_opener()
         opener.addheaders = [("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36")]
         response = opener.open(filelink)
