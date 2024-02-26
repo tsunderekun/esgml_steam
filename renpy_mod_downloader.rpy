@@ -1,6 +1,6 @@
 init:
     $ mods["knz_dwnl_git"]=u"{font=res/esgml_new.ttf}Everlasting Summer GitHub Mods Loader{/font}"
-    $ esgml_ver = '4.0.8 RC3 Isatis'
+    $ esgml_ver = '4.0.9 RC5 Isatis'
     $ ch_pr = ''
     $ ready_ma = False
     $ ready_m = False
@@ -518,7 +518,7 @@ init python:
         else:
             ssl._create_default_https_context = ssl._create_unverified_context
         opener = urllib2.build_opener()
-        opener.addheaders = [("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36")]
+        opener.addheaders = [("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36")]
         response = opener.open(filelink)
         CHUNK = 16 * 1024
         meta = response.info()
