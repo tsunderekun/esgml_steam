@@ -1,0 +1,12 @@
+# -*- coding: utf-8 -*-
+# Пример добавления собственного репозитория для ESGML
+# Чтобы активировать, переименуйте этот файл, убрав суффикс .example (например, в my_mods.rpy)
+
+init 5 python:
+    git_easyrepo(
+        'sample_custom_mod',
+        ("https://raw.githubusercontent.com/user/repo/master/git_sample_base.rpyc",
+         "https://raw.githubusercontent.com/user/repo/master/git_sample_res.rpa"),
+        'Пример Пользовательского Мода',
+        u'''Описание вашего мода. Здесь можно рассказать об авторах, завязке сюжета и особенностях модификации.'''
+    )

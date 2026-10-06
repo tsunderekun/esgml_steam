@@ -1,10 +1,46 @@
+init -999 python:
+    import os as git_os
+    _workshop_dir = git_os.path.normpath(git_os.path.join(renpy.config.basedir, '..', '..', 'workshop', 'content', '331470', '1515489831')) + '/'
+    _workshop_parent = git_os.path.normpath(git_os.path.join(renpy.config.basedir, '..', '..', 'workshop', 'content', '331470'))
+    if git_os.path.exists(_workshop_parent):
+        if not git_os.path.exists(_workshop_dir):
+            try:
+                git_os.makedirs(_workshop_dir)
+            except Exception:
+                pass
+        git_destination = _workshop_dir
+    else:
+        _fallback_dir = git_os.path.normpath(git_os.path.join(renpy.config.gamedir, 'mods', 'esgml')) + '/'
+        if not git_os.path.exists(_fallback_dir):
+            try:
+                git_os.makedirs(_fallback_dir)
+            except Exception:
+                pass
+        git_destination = _workshop_dir if git_os.path.exists(_workshop_dir) else _fallback_dir
+
+    if git_destination:
+        _d_clean = git_os.path.normpath(git_destination)
+        if _d_clean not in renpy.config.searchpath:
+            renpy.config.searchpath.append(_d_clean)
+        try:
+            renpy.loader.cleardirfiles()
+        except Exception:
+            pass
+        try:
+            renpy.loader.loadable_cache.clear()
+        except Exception:
+            pass
+
 init:
-    $ mods["knz_dwnl_git"]=u"{font=res/esgml_new.ttf}Everlasting Summer GitHub Mods Loader{/font}"
-    $ esgml_ver = '4.0.9 RC5 Isatis'
+    python:
+        try:
+            mods["knz_dwnl_git"] = u"{font=res/esgml_new.ttf}Everlasting Summer GitHub Mods Loader{/font}"
+        except Exception:
+            pass
+    $ esgml_ver = '4.1'
     $ ch_pr = ''
     $ ready_ma = False
     $ ready_m = False
-    # $ tindex = ''
     if persistent.git_mod_installed == None:
         $ persistent.git_mod_installed = []
     transform git_img_b():
@@ -35,13 +71,12 @@ init:
         easein 2 alpha 0
         easein 2 alpha 1.0
 
-
-
-
     image git_nfo = "res/git_nfo.png"
     $ nfo_text = ''
     $ m_nfo_text = ''
     $ git_queue = []
+    $ git_del_queue = []
+    $ git_qu_tab = 'dwl'
 
 
 
@@ -83,25 +118,35 @@ init:
     $ style.esgml_mmn = Style(style.esgml_mn)
     $ style.esgml_mmn.size = 80
 
+    $ style.esgml_vbar = Style(style.vbar)
+    $ style.esgml_vbar.bar_vertical = True
+    $ style.esgml_vbar.top_bar = Solid("#00000055")
+    $ style.esgml_vbar.bottom_bar = Solid("#00000055")
+    $ style.esgml_vbar.thumb = Solid("#ffe27d88")
+    $ style.esgml_vbar.hover_thumb = Solid("#ffe27dff")
+    $ style.esgml_vbar.thumb_shadow = None
+    $ style.esgml_vbar.thumb_offset = 0
+    $ style.esgml_vbar.xmaximum = 12
+    $ style.esgml_vbar.xminimum = 12
+
     $ tindex = ''
     $ git_not = ''
     $ git_not1 = ''
     $ global tindex
 
-    $ git_destination = renpy.config.basedir + '/../../workshop/content/331470/1515489831/'
-
 
 label knz_dwnl_git:
     window hide
+    python:
+        try:
+            git_load_custom_repos()
+        except Exception:
+            pass
     $ config.mouse = {'default' : [("res/cursor.png", 0, 0)]}
-    show black with dspr
-    show image "res/git_warn.png" with dspr
-    $ renpy.pause(5)
-    show black with dspr
     play sound 'res/git_start.ogg'
     show image "res/git_splash.png" with dspr
-    $ renpy.pause(2)
-    play music 'res/git_main.ogg' fadein 5
+    $ renpy.pause(1.5)
+    play music 'res/git_main.ogg' fadein 3
     if _return == "mm":
         $ config.mouse = {'default' : [("images/misc/mouse/1.png", 0, 0)]}
         return
@@ -111,13 +156,13 @@ screen knz_info_screen(nfo_text, m_nfo_text):
     modal False
     add 'git_nfo'
     vbox xalign 0.5 yalign 0.5:
-        text nfo_text xalign 0.5 at git_img_u:
+        text nfo_text substitute False xalign 0.5 at git_img_u:
             style "esgml_nn"
         null height 20
-        text m_nfo_text xalign 0.5 at git_img_u:
+        text m_nfo_text substitute False xalign 0.5 at git_img_u:
             style "esgml_nm"
         null height 10
-        text ch_pr xalign 0.5 at git_img_u:
+        text ch_pr substitute False xalign 0.5 at git_img_u:
             style "esgml_nm"
 
 
@@ -136,58 +181,59 @@ screen knz_git_dwnl_menu:
             text "Everlasting Summer Git Mods Loader":
                         style "esgml_mmn"
             null height 10
-            text "Свободный репозиторий модов «Бесконечного лета»":
+            $ _mod_count_str = " (Всего: " + str(len(git_mod_lists)) + ")" if git_mod_lists else ""
+            text ("Свободный репозиторий модов «Бесконечного лета»" + _mod_count_str):
                         style "esgml_mn"
-    side "r":
-        area (0.05, 0.20, 0.8, 0.675)
+    side "c r":
+        area (0.05, 0.20, 0.85, 0.675)
         viewport id "git_mods_menu":
             draggable True
             mousewheel True
-            scrollbars None
             has vbox
             for id in git_mod_lists:
-                hbox spacing 10 ypos:
+                hbox spacing 14 yalign 0.5:
 
                     if str(id) in persistent.git_mod_installed:
-                        add 'res/git_dwl_inactive.png' xalign 0.01
+                        add 'res/git_dwl_inactive.png' yalign 0.5
                     else:
-                        imagebutton auto 'res/git_dwl_%s.png' action [Function(generate_index, id), SetScreenVariable("tindex", str(id)), Function(renpy.call_in_new_context, 'run_down2')] at git_img_b xalign 0.01
-
+                        imagebutton auto 'res/git_dwl_%s.png' action [Function(generate_index, id), Function(renpy.call_in_new_context, 'run_down2')] at git_img_b yalign 0.5
 
                     if str(id) in persistent.git_mod_installed:
-                        add 'res/git_qu_inactive.png' xalign 0.01
+                        if str(id) in git_del_queue:
+                            add 'res/git_qu_inactive.png' yalign 0.5
+                        else:
+                            imagebutton auto 'res/git_qu_%s.png' action [Function(git_del_queue.append, id), SetVariable("git_not", git_info[id]["name"] + '\nдобавлен в очередь удаления'), Show("git_notice", dissolve)] at git_img_b yalign 0.5
                     elif str(id) in git_queue:
-                        add 'res/git_qu_inactive.png' xalign 0.01
+                        add 'res/git_qu_inactive.png' yalign 0.5
                     else:
-                        imagebutton auto 'res/git_qu_%s.png' action [Function(git_queue.append, id), SetVariable("git_not", git_info[id]["name"] + '\nдобавлен в очередь загрузки'), Show("git_notice", dissolve)] at git_img_b xalign 0.01
-                    #
-                    #
-                    if str(id) in persistent.git_mod_installed:
-                        imagebutton auto 'res/git_del_%s.png' action [Function(generate_index, id), Function(renpy.call_in_new_context, 'deleter')] at git_img_b xalign 0
-                    else:
-                        add 'res/git_del_inactive.png' xalign 0
+                        imagebutton auto 'res/git_qu_%s.png' action [Function(git_queue.append, id), SetVariable("git_not", git_info[id]["name"] + '\nдобавлен в очередь загрузки'), Show("git_notice", dissolve)] at git_img_b yalign 0.5
 
-                    textbutton git_info[id]["name"] ypos -0.2125 action [Hide("knz_git_dwnl_menu", dissolve), Show('git_modnfo', dissolve, id)] at git_img_b:
+                    if str(id) in persistent.git_mod_installed:
+                        imagebutton auto 'res/git_del_%s.png' action [Function(generate_index, id), Function(renpy.call_in_new_context, 'deleter')] at git_img_b yalign 0.5
+                    else:
+                        add 'res/git_del_inactive.png' yalign 0.5
+
+                    textbutton git_info[id]["name"] yalign 0.5 action [Hide("knz_git_dwnl_menu", dissolve), Show('git_modnfo', dissolve, id)] at git_img_b:
                         style "esgml_mm"
                         text_style "esgml_mm"
 
-                    # textbutton git_info[name]["name"] ypos -0.2125  action [Show('git_modnfo', dissolve, id)] at git_img_b:
-                    #     style "esgml_mm"
-                    #     text_style "esgml_mm"
+        vbar value YScrollValue("git_mods_menu") style "esgml_vbar"
+
     frame background Frame(Solid("0008")) left_padding 25 right_padding 25 bottom_padding 20 top_padding 25 xalign 0.5 ypos 0.900 xminimum 1920 xmaximum 1920:
         grid 6 1 spacing 96 xalign 0.5:
 
-            imagebutton auto 'res/git_main_%s.png' action [SetField(config, "mouse", {'default' : [('images/misc/mouse/1.png', 0, 0)]}), MainMenu(confirm=False)] hovered [SetVariable("git_not1", "Вернуться в главное меню"), Show("git_notice_d", dissolve)] unhovered [SetScreenVariable("git_not1", " "), Hide("git_notice_d", dissolve)] at git_img_b
+            imagebutton auto 'res/git_main_%s.png' action [SetField(config, "mouse", {'default' : [('images/misc/mouse/1.png', 0, 0)]}), MainMenu(confirm=False)] hovered [SetVariable("git_not1", "Вернуться в главное меню"), Show("git_notice_d", dissolve)] unhovered [SetVariable("git_not1", ""), Hide("git_notice_d", dissolve)] at git_img_b
 
-            imagebutton auto 'res/git_qu1_%s.png' action [Function(renpy.call_in_new_context, 'go_to_git_qu')] hovered [SetVariable("git_not1", "Очередь загрузки"), Show("git_notice_d", dissolve)] unhovered [SetScreenVariable("git_not1", " "), Hide("git_notice_d", dissolve)] at git_img_b
+            $ _qu_text = "Очередь: загрузка (" + str(len(git_queue)) + "), удаление (" + str(len(git_del_queue)) + ")" if (git_queue or git_del_queue) else "Очередь"
+            imagebutton auto 'res/git_qu1_%s.png' action [Function(renpy.call_in_new_context, 'go_to_git_qu')] hovered [SetVariable("git_not1", _qu_text), Show("git_notice_d", dissolve)] unhovered [SetVariable("git_not1", ""), Hide("git_notice_d", dissolve)] at git_img_b
 
-            imagebutton auto 'res/git_nlt_%s.png' action [Show("git_debug", dissolve)] hovered [SetVariable("git_not1", "Меню отладки"), Show("git_notice_d", dissolve)] unhovered [SetScreenVariable("git_not1", " "), Hide("git_notice_d", dissolve)] at git_img_b
+            imagebutton auto 'res/git_nlt_%s.png' action [Show("git_debug", dissolve)] hovered [SetVariable("git_not1", "Настройки и отладка"), Show("git_notice_d", dissolve)] unhovered [SetVariable("git_not1", ""), Hide("git_notice_d", dissolve)] at git_img_b
 
-            imagebutton auto 'res/git_rst_%s.png' action [Function(renpy.utter_restart)]  hovered [SetVariable("git_not1", "Перезагрузить"), Show("git_notice_d", dissolve)] unhovered [SetScreenVariable("git_not1", " "), Hide("git_notice_d", dissolve)] at git_img_b
+            imagebutton auto 'res/git_rst_%s.png' action [Function(renpy.utter_restart)] hovered [SetVariable("git_not1", "Перезагрузить"), Show("git_notice_d", dissolve)] unhovered [SetVariable("git_not1", ""), Hide("git_notice_d", dissolve)] at git_img_b
 
-            imagebutton auto 'res/git_nfo_%s.png' action [Function(renpy.call_in_new_context, 'go_to_git_authors')] hovered [SetVariable("git_not1", "Информация о моде"), Show("git_notice_d", dissolve)] unhovered [SetScreenVariable("git_not1", " "), Hide("git_notice_d", dissolve)] at git_img_b
+            imagebutton auto 'res/git_nfo_%s.png' action [Function(renpy.call_in_new_context, 'go_to_git_authors')] hovered [SetVariable("git_not1", "Информация о моде"), Show("git_notice_d", dissolve)] unhovered [SetVariable("git_not1", ""), Hide("git_notice_d", dissolve)] at git_img_b
 
-            imagebutton auto 'res/git_exit_%s.png' action [Quit (confirm=False)]  hovered [SetVariable("git_not1", "Выйти из БЛ"), Show("git_notice_d", dissolve)] unhovered [SetScreenVariable("git_not1", " "), Hide("git_notice_d", dissolve)] at git_img_b
+            imagebutton auto 'res/git_exit_%s.png' action [Quit(confirm=False)] hovered [SetVariable("git_not1", "Выйти из БЛ"), Show("git_notice_d", dissolve)] unhovered [SetVariable("git_not1", ""), Hide("git_notice_d", dissolve)] at git_img_b
 
 
     # default git_not1 = ''
@@ -202,7 +248,7 @@ screen git_notice():
         textbutton git_not:
             style "esgml_not"
             text_style "esgml_not"
-    timer 5.0 action Hide("git_notice", dissolve)
+    timer 2.0 action Hide("git_notice", dissolve)
 
 screen git_notice_d():
     frame background Frame(Solid("0008")) xalign 0.5 yalign 0.875 left_padding 10 right_padding 10 bottom_padding 10 top_padding 10:
@@ -210,13 +256,41 @@ screen git_notice_d():
             style "esgml_not"
             text_style "esgml_not"
 
+screen git_restart_prompt(prompt_title="Требуется перезагрузка", prompt_msg="Для применения изменений требуется перезагрузка игры.\nПерезагрузить сейчас?"):
+    modal True
+    add Solid("#000000a0")
+    frame background Frame(Solid("0008")) xalign 0.5 yalign 0.5 left_padding 40 right_padding 40 bottom_padding 35 top_padding 35:
+        vbox xalign 0.5:
+            textbutton prompt_title xalign 0.5:
+                style "esgml_notb"
+                text_style "esgml_notb"
+            null height 20
+            text prompt_msg substitute False xalign 0.5 text_align 0.5:
+                style "esgml_nm"
+            null height 35
+            hbox xalign 0.5 spacing 80:
+                textbutton "Перезагрузить" action [Hide("git_restart_prompt", dissolve), Function(renpy.utter_restart)] at git_img_b:
+                    style "esgml_not"
+                    text_style "esgml_not"
+                textbutton "Позже" action [Hide("git_restart_prompt", dissolve), Return()] at git_img_b:
+                    style "esgml_not"
+                    text_style "esgml_not"
+
 screen git_debug():
     frame background Frame(Solid("0008")) xalign 0.5 yalign 0.5 left_padding 25 right_padding 25 bottom_padding 25 top_padding 25:
         vbox:
-            textbutton "Меню отладки" xalign 0.5:
+            textbutton "Настройки и отладка" xalign 0.5:
                 style "esgml_notb"
                 text_style "esgml_notb"
-            null height 25
+            null height 20
+
+            $ _ov_state = " (ВКЛ)" if getattr(persistent, "esgml_main_menu_overlay", True) else " (ВЫКЛ)"
+            $ _ov_txt = "Быстрые кнопки в главном меню:" + _ov_state
+            textbutton _ov_txt xalign 0.5 action [Function(esgml_toggle_main_menu_overlay), Show("git_notice", dissolve)] at git_img_b:
+                style "esgml_not"
+                text_style "esgml_not"
+
+            null height 15
             textbutton "Очистить индексы установленных модов" xalign 0.5 action [Hide("git_debug", dissolve), Function(git_clear_index)] at git_img_b:
                 style "esgml_not"
                 text_style "esgml_not"
@@ -231,7 +305,7 @@ screen git_debug():
                 textbutton "Загрузить New Life Team ModPack" xalign 0.5 action [OpenURL('steam://url/CommunityFilePage/847728687')] at git_img_b:
                     style "esgml_not"
                     text_style "esgml_not"
-            null height 25
+            null height 20
             textbutton "Назад" xalign 0.5 action Hide("git_debug", dissolve) at git_img_b:
                 style "esgml_not"
                 text_style "esgml_not"
@@ -286,38 +360,83 @@ label go_to_git_manual_index:
 screen git_qus:
     modal False
     add "git_nfo"
-    vbox xpos 0.05 ypos 0.05 yfill:
-                    text "Очередь загрузки модов":
-                                style "esgml_nn"
-                    side "r":
-                        area (0.05, 0.05, 0.7, 0.675)
-                        viewport id "git_qu_menu":
-                            draggable True
-                            mousewheel True
-                            scrollbars None
-                            has vbox
-                            if not git_queue:
-                                textbutton "Очередь пуста" ypos -0.2125 at git_img_b:
-                                    style "esgml_mm"
-                                    text_style "esgml_mm"
 
+    $ _qu_dwl_title = "Очередь загрузки (" + str(len(git_queue)) + ")"
+    $ _qu_del_title = "Очередь удаления (" + str(len(git_del_queue)) + ")"
 
-                            else:
-                                for id in git_queue:
-                                    textbutton git_info[id]["name"] ypos -0.2125 at git_img_b:
-                                        style "esgml_mm"
-                                        text_style "esgml_mm"
-    hbox yalign 0.975 xalign 0.5 spacing 96:
-        if git_queue:
-            textbutton 'Загрузить' action [Function(git_qu_dwl)] at git_img_b:
+    vbox xpos 0.05 ypos 0.08:
+        hbox spacing 40:
+            if git_qu_tab == 'dwl':
+                textbutton _qu_dwl_title:
+                    style "esgml_nn"
+                    text_style "esgml_nn"
+            else:
+                textbutton _qu_dwl_title action SetVariable("git_qu_tab", "dwl") at git_img_b:
+                    style "esgml_mn"
+                    text_style "esgml_mn"
+
+            if git_qu_tab == 'del':
+                textbutton _qu_del_title:
+                    style "esgml_nn"
+                    text_style "esgml_nn"
+            else:
+                textbutton _qu_del_title action SetVariable("git_qu_tab", "del") at git_img_b:
+                    style "esgml_mn"
+                    text_style "esgml_mn"
+
+    side "c r":
+        area (0.05, 0.20, 0.88, 0.65)
+        viewport id "git_qu_menu":
+            draggable True
+            mousewheel True
+            has vbox
+            if git_qu_tab == 'dwl':
+                if not git_queue:
+                    textbutton "Очередь загрузки пуста" at git_img_b:
+                        style "esgml_mm"
+                        text_style "esgml_mm"
+                else:
+                    for id in git_queue:
+                        hbox spacing 24 yalign 0.5:
+                            imagebutton auto 'res/git_del_%s.png' action [Function(git_queue.remove, id), SetVariable("git_not", git_info[id]["name"] + '\nубран из очереди'), Show("git_notice", dissolve)] at git_img_b yalign 0.5
+                            textbutton git_info[id]["name"] action [Hide("git_qus", dissolve), Show('git_modnfo', dissolve, id)] at git_img_b yalign 0.5:
+                                style "esgml_mm"
+                                text_style "esgml_mm"
+            else:
+                if not git_del_queue:
+                    textbutton "Очередь удаления пуста" at git_img_b:
+                        style "esgml_mm"
+                        text_style "esgml_mm"
+                else:
+                    for id in git_del_queue:
+                        hbox spacing 24 yalign 0.5:
+                            imagebutton auto 'res/git_del_%s.png' action [Function(git_del_queue.remove, id), SetVariable("git_not", git_info[id]["name"] + '\nубран из очереди'), Show("git_notice", dissolve)] at git_img_b yalign 0.5
+                            textbutton git_info[id]["name"] action [Hide("git_qus", dissolve), Show('git_modnfo', dissolve, id)] at git_img_b yalign 0.5:
+                                style "esgml_mm"
+                                text_style "esgml_mm"
+
+        vbar value YScrollValue("git_qu_menu") style "esgml_vbar"
+
+    hbox yalign 0.95 xalign 0.5 spacing 96:
+        if git_qu_tab == 'dwl':
+            if git_queue:
+                textbutton 'Загрузить' action [Function(git_qu_dwl)] at git_img_b:
                     style "esgml_bb"
                     text_style "esgml_bb"
-            textbutton 'Очистить' action [Function(git_qu_clr)] at git_img_b:
+                textbutton 'Очистить' action [Function(git_qu_clr)] at git_img_b:
+                    style "esgml_bb"
+                    text_style "esgml_bb"
+        else:
+            if git_del_queue:
+                textbutton 'Удалить' action [Function(git_qu_del)] at git_img_b:
+                    style "esgml_bb"
+                    text_style "esgml_bb"
+                textbutton 'Очистить' action [Function(git_del_qu_clr)] at git_img_b:
                     style "esgml_bb"
                     text_style "esgml_bb"
         textbutton 'Назад' action [Show('knz_git_dwnl_menu', dissolve), Hide('git_qus')] at git_img_b:
-                style "esgml_bb"
-                text_style "esgml_bb"
+            style "esgml_bb"
+            text_style "esgml_bb"
 
 screen git_manual_index:
     modal False
@@ -338,7 +457,7 @@ screen git_manual_index:
                                     text_style "esgml_mm"
 
     hbox yalign 0.975 xalign 0.5 spacing 96:
-        textbutton 'Назад' action [Show('knz_git_dwnl_menu', dissolve), Hide('git_qus')] at git_img_b:
+        textbutton 'Назад' action [Show('knz_git_dwnl_menu', dissolve), Hide('git_manual_index')] at git_img_b:
                 style "esgml_bb"
                 text_style "esgml_bb"
 
@@ -409,7 +528,7 @@ screen git_authors:
 
         null height 50
 
-        textbutton 'Назад' ypos 0.8 action [Show('knz_git_dwnl_menu', dissolve), Hide('git_modnfo')] at git_img_b:
+        textbutton 'Назад' ypos 0.8 action [Show('knz_git_dwnl_menu', dissolve), Hide('git_authors')] at git_img_b:
                 style "esgml_bb"
                 text_style "esgml_bb"
 
@@ -433,14 +552,24 @@ screen git_modnfo(id):
                 textbutton 'Удалить' action [Function(generate_index, id), Function(renpy.call_in_new_context, 'deleter')] at git_img_b:
                         style "esgml_bb"
                         text_style "esgml_bb"
-                textbutton '(уже загружен)':
+                if str(id) in git_del_queue:
+                    textbutton 'В очереди удаления' action [Function(git_del_queue.remove, id), SetVariable("git_not", git_info[id]["name"] + '\nубран из очереди удаления'), Show("git_notice", dissolve)] at git_img_b:
+                        style "esgml_bb"
+                        text_style "esgml_bb"
+                else:
+                    textbutton '+ В очередь' action [Function(git_del_queue.append, id), SetVariable("git_not", git_info[id]["name"] + '\nдобавлен в очередь удаления'), Show("git_notice", dissolve)] at git_img_b:
                         style "esgml_bb"
                         text_style "esgml_bb"
             else:
-                textbutton 'Загрузить' action [Function(generate_index, id), SetScreenVariable("tindex", str(id)), Function(renpy.call_in_new_context, 'run_down2')] at git_img_b:
+                textbutton 'Загрузить' action [Function(generate_index, id), Function(renpy.call_in_new_context, 'run_down2')] at git_img_b:
                         style "esgml_bb"
                         text_style "esgml_bb"
-                textbutton '(не загружен)':
+                if str(id) in git_queue:
+                    textbutton 'В очереди загрузки' action [Function(git_queue.remove, id), SetVariable("git_not", git_info[id]["name"] + '\nубран из очереди загрузки'), Show("git_notice", dissolve)] at git_img_b:
+                        style "esgml_bb"
+                        text_style "esgml_bb"
+                else:
+                    textbutton '+ В очередь' action [Function(git_queue.append, id), SetVariable("git_not", git_info[id]["name"] + '\nдобавлен в очередь загрузки'), Show("git_notice", dissolve)] at git_img_b:
                         style "esgml_bb"
                         text_style "esgml_bb"
     side "c":
@@ -452,10 +581,13 @@ screen git_modnfo(id):
             scrollbars None
             vbox:
                 hbox yalign 0.175 xalign 0.5 spacing 64:
-                    imagebutton idle im.Scale(git_info[id]['scr1'], 480, 270) hover im.Scale(git_info[id]['scr1'], 480, 270) action [Show('git_image', dissolve, git_info[id]['scr1'], id)] at git_img_c
-                    imagebutton idle im.Scale(git_info[id]['scr2'], 480, 270) hover im.Scale(git_info[id]['scr2'], 480, 270) action [Show('git_image', dissolve, git_info[id]['scr2'], id)] at git_img_c
-                    imagebutton idle im.Scale(git_info[id]['scr3'], 480, 270) hover im.Scale(git_info[id]['scr3'], 480, 270) action [Show('git_image', dissolve, git_info[id]['scr3'], id)] at git_img_c
-                text git_info[id]['desc'] yalign 0.55 xalign 0.5:
+                    $ _s1 = git_resolve_screen(id, 1, git_info[id].get('scr1'))
+                    $ _s2 = git_resolve_screen(id, 2, git_info[id].get('scr2'))
+                    $ _s3 = git_resolve_screen(id, 3, git_info[id].get('scr3'))
+                    imagebutton idle im.Scale(_s1, 480, 270) hover im.Scale(_s1, 480, 270) action [Show('git_image', dissolve, _s1, id)] at git_img_c
+                    imagebutton idle im.Scale(_s2, 480, 270) hover im.Scale(_s2, 480, 270) action [Show('git_image', dissolve, _s2, id)] at git_img_c
+                    imagebutton idle im.Scale(_s3, 480, 270) hover im.Scale(_s3, 480, 270) action [Show('git_image', dissolve, _s3, id)] at git_img_c
+                text git_info[id]['desc'] substitute False yalign 0.55 xalign 0.5:
                     style "esgml_ii"
                     xmaximum 0.90
 
@@ -479,117 +611,190 @@ init python:
     import shutil
 
     def generate_index (id):
-        tindex = str(id)
         global tindex
+        tindex = str(id)
 
     kprogress = None
 
     def git_clear_index():
+        global git_not
         persistent.git_mod_installed = []
         git_not = "Индексы успешно очищены"
-        global git_not
         renpy.show_screen('git_notice')
-        # git_not = ""
-        # global git_not
 
     def git_manual_index(id, mode):
+        global git_not
         if mode == 1:
-            persistent.git_mod_installed.append(id)
+            if id not in persistent.git_mod_installed:
+                persistent.git_mod_installed.append(id)
             git_not = "Индекс успешно добавлен"
         if mode == 0:
-            persistent.git_mod_installed.remove(id)
+            if id in persistent.git_mod_installed:
+                persistent.git_mod_installed.remove(id)
             git_not = "Индекс успешно очищен"
-        global git_not
         renpy.show_screen('git_notice')
-        # git_not = ""
-        # global git_not
 
 
-    def knz_dnwl_mod(filename, filelink):
-
-        global ch_pr
+    def knz_dnwl_mod(target_path_or_name, filelink):
+        global ch_pr, git_tset, git_last_error
         ch_pr = "Инициализация..."
-        ready_ma = False
-        import urllib2, ssl
+        git_tset = False
+        git_last_error = ""
+
         try:
-            ssl._create_unverified_context
-        except AttributeError:
-            pass
+            import urllib.request as urllib2
+        except ImportError:
+            import urllib2
+
+        import ssl
+        import time
+        try:
+            ssl_context = ssl._create_unverified_context()
+        except Exception:
+            ssl_context = None
+
+        # Определяем путь к целевому файлу
+        if git_os.path.isabs(target_path_or_name) or ('/' in target_path_or_name) or ('\\' in target_path_or_name):
+            target_filepath = target_path_or_name
         else:
-            ssl._create_default_https_context = ssl._create_unverified_context
-        opener = urllib2.build_opener()
-        opener.addheaders = [("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36")]
-        response = opener.open(filelink)
-        CHUNK = 16 * 1024
-        meta = response.info()
-        ch_full_4 = meta.getheaders("Content-Length")
-        ch_ful_4 = "".join(ch_full_4)
-        ch_full_3 = float(ch_ful_4)
-        ch_full_2 = (ch_full_3 / 1000) / 1000
-        ch_full_1 = round(ch_full_2, 2)
-        ch_full = str(ch_full_1)
-        with open(filename, 'wb') as f:
-            while True:
-                ch_pr_b = float(git_os.stat(filename).st_size)
-                ch_pr_mb = (ch_pr_b / 1000) / 1000
-                ch_pr_r = round(ch_pr_mb, 2)
-                ch_pr_st = str(ch_pr_r)
-                ch_real_2 = (ch_pr_mb / ch_full_1 * 100)
-                ch_real_1 = round(ch_real_2, 1)
-                ch_real = str(ch_real_1) #Item::progress = double(Item::bytes_processed) / Item::total_bytes * 100;
-                ch_pr = "Загружено " + ch_pr_st  + " из " + ch_full + " МБ (" + ch_real + "%)" + "\nИмя файла: " + str(filename)
-                chunk = response.read(CHUNK)
-                if not chunk:
-                    break
-                f.write(chunk)
-        git_tset = git_os.path.isfile(filename)
-        global git_tset
-        shutil.move(filename, git_destination + filename)
-        ch_pr_b = float(git_os.stat(git_destination + filename).st_size)
-        ch_pr_mb = (ch_pr_b / 1000) / 1000
-        ch_pr_r = round(ch_pr_mb, 2)
-        ch_pr_st = str(ch_pr_r)
-        ch_pr = "Загружено " + ch_pr_st + " из " + ch_full + " МБ (" + ch_real + "%)" + "\nИмя файла: " + str(filename)
+            target_filepath = git_os.path.join(git_destination, target_path_or_name)
+
+        target_dir = git_os.path.dirname(target_filepath)
+        if target_dir and not git_os.path.exists(target_dir):
+            try:
+                git_os.makedirs(target_dir)
+            except Exception:
+                pass
+
+        filename = git_os.path.basename(target_filepath)
+        part_filepath = target_filepath + ".part"
+
+        try:
+            if isinstance(filelink, unicode):
+                filelink = filelink.encode('ascii')
+        except Exception:
+            pass
+
+        max_attempts = 3
+        for attempt in range(1, max_attempts + 1):
+            try:
+                if attempt > 1:
+                    ch_pr = "Повтор ({}/{})...\nИмя файла: {}".format(attempt, max_attempts, filename)
+                    time.sleep(1.5)
+
+                req = urllib2.Request(str(filelink), headers={
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
+                })
+                if ssl_context is not None:
+                    try:
+                        response = urllib2.urlopen(req, context=ssl_context, timeout=60)
+                    except TypeError:
+                        response = urllib2.urlopen(req, timeout=60)
+                else:
+                    response = urllib2.urlopen(req, timeout=60)
+
+                # Безопасный парсинг Content-Length
+                total_bytes = 0
+                try:
+                    if hasattr(response, 'headers') and response.headers.get("Content-Length"):
+                        total_bytes = int(response.headers.get("Content-Length"))
+                    elif response.info() and response.info().getheader("Content-Length"):
+                        total_bytes = int(response.info().getheader("Content-Length"))
+                except Exception:
+                    total_bytes = 0
+
+                total_mb_str = "{:.2f}".format(total_bytes / (1024.0 * 1024.0)) if total_bytes > 0 else "???"
+
+                CHUNK = 64 * 1024
+                downloaded = 0
+
+                with open(part_filepath, 'wb') as f:
+                    while True:
+                        chunk = response.read(CHUNK)
+                        if not chunk:
+                            break
+                        f.write(chunk)
+                        downloaded += len(chunk)
+                        dl_mb = downloaded / (1024.0 * 1024.0)
+                        if total_bytes > 0:
+                            pct = (float(downloaded) / total_bytes) * 100.0
+                            ch_pr = "Загружено {:.2f} из {} МБ ({:.1f}%)\nИмя файла: {}".format(dl_mb, total_mb_str, pct, filename)
+                        else:
+                            ch_pr = "Загружено {:.2f} МБ\nИмя файла: {}".format(dl_mb, filename)
+
+                # Атомарная замена файла
+                if git_os.path.exists(target_filepath):
+                    try:
+                        git_os.remove(target_filepath)
+                    except Exception:
+                        pass
+
+                git_os.rename(part_filepath, target_filepath)
+                git_tset = git_os.path.isfile(target_filepath)
+                return git_tset
+
+            except Exception as e:
+                git_last_error = str(e).replace('[', '[[').replace(']', ']]')
+                if git_os.path.exists(part_filepath):
+                    try:
+                        git_os.remove(part_filepath)
+                    except Exception:
+                        pass
+                if attempt == max_attempts:
+                    git_tset = False
+                    return False
+        return False
 
     ###MOD CHECKER###
 
 init -10 python:
     git_archives = []
-    def rpa_check_append(rpaf, rpan):
+
+    def _git_resolve_dest():
+        global git_destination
+        if 'git_destination' in globals() and git_destination:
+            return git_destination
         import os as git_os
+        _ws = git_os.path.normpath(git_os.path.join(renpy.config.basedir, '..', '..', 'workshop', 'content', '331470', '1515489831')) + '/'
+        git_destination = _ws
+        return _ws
+
+    def rpa_check_append(rpaf, rpan):
         global git_archives
-        destination = renpy.config.basedir + '/../../workshop/content/331470/1515489831/'
         try:
-            file = open(destination + rpaf)
-        except IOError as e:
+            import os as git_os
+            dest = _git_resolve_dest()
+            full_path = git_os.path.join(dest, rpaf)
+            if git_os.path.isfile(full_path):
+                if rpan not in renpy.config.archives:
+                    renpy.config.archives.append(rpan)
+                if rpan not in git_archives:
+                    git_archives.append(rpan)
+        except Exception:
             pass
-        else:
-            with file:
-                config.archives.append(rpan)
-                git_archives.append(rpan)
-
-
-
 
     def rpa_check_varinst(git_mod_id, git_mod_name, rpaf):
         global mods
-        import os as git_os
-        destination = renpy.config.basedir + '/../../workshop/content/331470/1515489831/'
         try:
-            file = open(destination + rpaf)
-        except IOError as e:
+            import os as git_os
+            dest = _git_resolve_dest()
+            full_path = git_os.path.join(dest, rpaf)
+            if git_os.path.isfile(full_path):
+                mods[git_mod_id] = git_mod_name
+        except Exception:
             pass
-        else:
-            with file:
-                    mods[git_mod_id]=git_mod_name
 
     ###MOD CONFIGURATORS###
 
-
 init 10 python:
     for a in git_archives:
-        config.archives.append(a)
+        if a not in renpy.config.archives:
+            renpy.config.archives.append(a)
+    try:
+        mods["knz_dwnl_git"] = u"{font=res/esgml_new.ttf}Everlasting Summer GitHub Mods Loader{/font}"
+    except Exception:
+        pass
     try:
         modsImages["knz_dwnl_git"] = ("ESGML.png", False)
-    except:
+    except Exception:
         pass
