@@ -1,0 +1,32 @@
+# Ren'Py compiled scripts & archives
+*.rpyc
+*.rpyb
+*.rpymc
+
+# Ren'Py cache and temp files
+**/cache/
+*.part
+*.tmp
+*.bak
+.dist/
+.sim_mod/
+
+# Ren'Py saves and runtime logs
+saves/
+log.txt
+traceback.txt
+errors.txt
+
+# OS generated files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store
+
+# Editor artifacts
+*.swp
+*~
+.idea/
+.vscode/*
+!.vscode/settings.json

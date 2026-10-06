@@ -1,53 +1,70 @@
-
 init python:
-    if persistent.git_mod_deleting == None:
+    import os as git_os
+    import shutil
+    try:
+        import urllib.parse as urlparse
+    except ImportError:
+        import urlparse
+
+    if persistent.git_mod_deleting is None:
         persistent.git_mod_deleting = []
-    if persistent.git_mod_deleting_id == None:
+    if persistent.git_mod_deleting_id is None:
         persistent.git_mod_deleting_id = []
 
     def knz_git_mod_clean(baserpa):
-        import os as git_os
         global ch_pr
         ch_pr = ''
         renpy.hide_screen('knz_git_dwnl_menu')
         nfo_text = 'Удаление...'
         m_nfo_text = 'Выполняется удаление указанного мода, ожидайте.'
         renpy.show_screen('knz_info_screen', nfo_text, m_nfo_text)
-        renpy.pause (1, hard=True)
-        try:
-            if git_os.path.isfile(str(git_destination + baserpa)):
-                # try:
-                #         renpy.config.archives.remove(baserpa[:-4])
-                # except:
-                #     pass
-                # git_os.remove(str(git_destination + baserpa))
-                persistent.git_mod_deleting.append(str(git_destination + baserpa))
-                persistent.git_mod_deleting_id.append(baserpa[:-4])
+        renpy.pause(0.5)
 
-            renpy.pause (2, hard=True)
+        target_file = git_os.path.join(git_destination, baserpa)
+        arc_id = baserpa[:-4] if baserpa.endswith('.rpa') else baserpa
+
+        try:
+            # Отключаем архив из конфига Ren'Py, если он там есть
+            if arc_id in renpy.config.archives:
+                try:
+                    renpy.config.archives.remove(arc_id)
+                except ValueError:
+                    pass
+
+            if git_os.path.isfile(target_file):
+                # Пытаемся удалить сразу
+                try:
+                    git_os.remove(target_file)
+                except (OSError, IOError):
+                    # Если файл заблокирован процессом Windows, откладываем удаление
+                    if target_file not in persistent.git_mod_deleting:
+                        persistent.git_mod_deleting.append(target_file)
+                    if arc_id not in persistent.git_mod_deleting_id:
+                        persistent.git_mod_deleting_id.append(arc_id)
+
             nfo_text = 'Файл удалён.'
-            m_nfo_text = 'Ожидайте, пожалуйста.'
+            m_nfo_text = 'Мод успешно удалён из игры.'
             renpy.hide_screen('knz_info_screen')
             renpy.show_screen('knz_info_screen', nfo_text, m_nfo_text)
-            renpy.pause (5, hard=True)
-        except OSError, e:
+            renpy.pause(1.5)
+        except OSError as e:
             renpy.hide_screen('knz_info_screen')
             nfo_text = 'Ошибка!'
-            m_nfo_text = 'Возможно, у\xa0вас проблемы с\xa0интернет-соединением, неверно настроен доступ\nк папкам Steam или\xa0неизвестная ошибка на\xa0сервере.'
+            safe_err = str(e).replace('[', '[[').replace(']', ']]')
+            m_nfo_text = 'Не удалось удалить файл:\n{}'.format(safe_err)
             renpy.show_screen('knz_info_screen', nfo_text, m_nfo_text)
-            renpy.pause (5, hard=True)
-
+            renpy.pause(2.5)
 
     def knz_git_rpyc_clean(mfolder):
         global ch_pr
         ch_pr = ''
-        shutil.rmtree(git_destination + mfolder, ignore_errors=True, onerror=None)
+        folder_path = git_os.path.join(git_destination, mfolder)
+        if git_os.path.exists(folder_path):
+            shutil.rmtree(folder_path, ignore_errors=True)
 
     def git_del_parser(links):
-
-        import os as git_os
-        import urlparse
-        persistent.git_mod_installed.remove(tindex)
+        if tindex in persistent.git_mod_installed:
+            persistent.git_mod_installed.remove(tindex)
         for x in links:
             url = x
             a = urlparse.urlparse(url)
@@ -59,6 +76,8 @@ init python:
                 knz_git_rpyc_clean(tindex)
 
 label deleter:
-    stop music fadeout 5
+    stop music fadeout 3
     $ git_del_parser(git_links[tindex])
-    call screen knz_git_dwnl_menu with dissolve
+    if not git_qu_lock:
+        call screen git_restart_prompt("Мод успешно удалён!", "Файлы мода удалены с компьютера.\nДля полного отключения требуется перезагрузка игры.\nПерезагрузить сейчас?")
+        call screen knz_git_dwnl_menu with dissolve

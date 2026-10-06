@@ -1,0 +1,14 @@
+[
+  {
+    "id": "sample_json_mod",
+    "name": "Пример Мода из JSON",
+    "desc": "Этот мод подключен через простой JSON-манифест без необходимости редактировать код игры.",
+    "scr1": "https://archive.org/download/item_id/screen1.png",
+    "scr2": "https://archive.org/download/item_id/screen2.png",
+    "scr3": "https://archive.org/download/item_id/screen3.png",
+    "links": [
+      "https://raw.githubusercontent.com/user/repo/master/git_sample_base.rpyc",
+      "https://raw.githubusercontent.com/user/repo/master/git_sample_res.rpa"
+    ]
+  }
+]
