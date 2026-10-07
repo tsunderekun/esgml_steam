@@ -30,3 +30,9 @@ $RECYCLE.BIN/
 .idea/
 .vscode/*
 !.vscode/settings.json
+
+# Python & Build artifacts
+__pycache__/
+*.pyc
+dist/
+scratch_*

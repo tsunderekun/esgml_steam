@@ -57,10 +57,23 @@ class ModScanner:
         inner_dir = abs_path
         mods_sub = os.path.join(abs_path, "mods")
         if os.path.isdir(mods_sub):
-            subs = [os.path.join(mods_sub, d) for d in os.listdir(mods_sub) if os.path.isdir(os.path.join(mods_sub, d))]
-            if subs:
-                # Pick the first mod folder or matching name
-                inner_dir = subs[0]
+            rpy_in_mods = [f for f in os.listdir(mods_sub) if f.endswith(".rpy") or f.endswith(".rpyc")]
+            if rpy_in_mods:
+                inner_dir = mods_sub
+            else:
+                subs = [os.path.join(mods_sub, d) for d in os.listdir(mods_sub) if os.path.isdir(os.path.join(mods_sub, d))]
+                sub_with_scripts = None
+                for s in subs:
+                    try:
+                        if any(f.endswith(".rpy") or f.endswith(".rpyc") for f in os.listdir(s)):
+                            sub_with_scripts = s
+                            break
+                    except Exception:
+                        pass
+                if sub_with_scripts:
+                    inner_dir = sub_with_scripts
+                elif subs:
+                    inner_dir = subs[0]
 
         meta = ModMetadata(
             source_dir=abs_path,
@@ -68,7 +81,7 @@ class ModScanner:
             workshop_id=workshop_id
         )
 
-        # Gather files
+        # Gather files across entire mod source directory
         total_size = 0
         scripts = []
         assets = []
@@ -83,7 +96,7 @@ class ModScanner:
                 if f_lower in cls.PREVIEW_NAMES:
                     previews.append(fpath)
 
-        for root, _, files in os.walk(inner_dir):
+        for root, _, files in os.walk(abs_path):
             for file in files:
                 fpath = os.path.join(root, file)
                 try:

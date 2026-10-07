@@ -38,9 +38,10 @@ class RPYCTool:
     def _find_game_python(self):
         game = self._find_game_dir()
         if game:
-            py = os.path.join(game, "lib", "windows-i686", "python.exe")
-            if os.path.isfile(py):
-                return py
+            for sub in ("windows-x86_64", "windows-i686"):
+                py = os.path.join(game, "lib", sub, "python.exe")
+                if os.path.isfile(py):
+                    return py
         return None
 
     @staticmethod
@@ -193,41 +194,33 @@ with open(sys.argv[2], 'w') as out:
         if not self.game_dir or not os.path.exists(self.game_dir):
             return False, "Game directory not found."
 
-        # Copy to a temporary location inside game/ if needed, or invoke Ren'Py compiler
-        script_code = """
-import sys, os
-sys.path.insert(0, os.path.abspath('.'))
-import renpy
-renpy.import_all()
-renpy.config.renpy_base = '.'
-import renpy.parser
-import renpy.script
-s = renpy.script.Script()
-src_file = sys.argv[1]
-dst_file = sys.argv[2]
-# Parse and compile
-lines = renpy.parser.list_logical_lines(src_file)
-data = renpy.parser.parse(src_file)
-# Write rpyc
-s.write_rpyc_data = s.write_rpyc_data
-with open(dst_file, 'wb') as f:
-    import cPickle, zlib
-    pickled = cPickle.dumps(data, protocol=2)
-    s.write_rpyc_header(f, 1)
-    s.write_rpyc_data(f, 1, pickled)
-"""
-        # Alternatively use standard Ren'Py lint/compile
-        cmd = [self.renpy_python_path, "Everlasting Summer.py", self.game_dir, "lint"]
+        game_sub = os.path.join(self.game_dir, "game")
+        import uuid
+        tmp_id = uuid.uuid4().hex[:8]
+        tmp_filename = f"_esgml_tmp_{tmp_id}.rpy"
+        tmp_rpy = os.path.join(game_sub, tmp_filename)
+        tmp_rpyc = os.path.join(game_sub, f"_esgml_tmp_{tmp_id}.rpyc")
+
         try:
-            res = subprocess.run(cmd, cwd=self.game_dir, capture_output=True, text=True, timeout=45)
-            # If standard .rpyc was generated next to rpy_path:
-            auto_rpyc = os.path.splitext(rpy_path)[0] + ".rpyc"
-            if os.path.isfile(auto_rpyc):
-                if target_rpyc_path and target_rpyc_path != auto_rpyc:
-                    import shutil
-                    shutil.move(auto_rpyc, target_rpyc_path)
-                return True, "Compiled successfully."
+            import shutil
+            shutil.copy2(rpy_path, tmp_rpy)
+
+            cmd = [self.renpy_python_path, "Everlasting Summer.py", ".", "compile"]
+            res = subprocess.run(cmd, cwd=self.game_dir, capture_output=True, text=True, timeout=60)
+
+            if os.path.isfile(tmp_rpyc):
+                out_dest = target_rpyc_path or (os.path.splitext(rpy_path)[0] + ".rpyc")
+                os.makedirs(os.path.dirname(os.path.abspath(out_dest)), exist_ok=True)
+                shutil.copy2(tmp_rpyc, out_dest)
+                return True, "Compiled successfully via Ren'Py."
+            else:
+                return False, "Ren'Py compile returned {} but rpyc not created. Stderr: {}".format(res.returncode, res.stderr[:200])
         except Exception as e:
             return False, "Compilation failed: {}".format(str(e))
-
-        return True, "Compiled."
+        finally:
+            if os.path.exists(tmp_rpy):
+                try: os.remove(tmp_rpy)
+                except Exception: pass
+            if os.path.exists(tmp_rpyc):
+                try: os.remove(tmp_rpyc)
+                except Exception: pass

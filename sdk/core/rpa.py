@@ -123,26 +123,30 @@ class RPAArchive:
 
         return extracted
 
-    def pack(self, input_dir, output_rpa_path, key=None, version=3, verbose=False, progress_callback=None, filter_ext=None):
+    def pack(self, input_dir=None, output_rpa_path=None, files_to_pack=None, key=None, version=3, verbose=False, progress_callback=None, filter_ext=None):
         """
-        Pack directory into RPA archive.
+        Pack directory or file list into RPA archive.
+        files_to_pack: optional list of (rel_path, full_path) tuples.
         filter_ext: optional set/list of extensions to include, or None for all.
         """
         if key is None:
             key = self.key
 
-        input_dir = os.path.abspath(input_dir)
-        files_to_pack = []
+        if files_to_pack is None:
+            if not input_dir:
+                raise ValueError("Either input_dir or files_to_pack must be provided.")
+            input_dir = os.path.abspath(input_dir)
+            files_to_pack = []
 
-        for root, _, files in os.walk(input_dir):
-            for file in files:
-                full_path = os.path.join(root, file)
-                rel_path = os.path.relpath(full_path, input_dir).replace("\\", "/")
-                if filter_ext:
-                    _, ext = os.path.splitext(file)
-                    if ext.lower() not in filter_ext:
-                        continue
-                files_to_pack.append((rel_path, full_path))
+            for root, _, files in os.walk(input_dir):
+                for file in files:
+                    full_path = os.path.join(root, file)
+                    rel_path = os.path.relpath(full_path, input_dir).replace("\\", "/")
+                    if filter_ext:
+                        _, ext = os.path.splitext(file)
+                        if ext.lower() not in filter_ext:
+                            continue
+                    files_to_pack.append((rel_path, full_path))
 
         files_to_pack.sort(key=lambda x: x[0])
         total = len(files_to_pack)

@@ -61,47 +61,63 @@ class ModAdapter:
         base_rpy_path = os.path.join(output_dir, base_rpy_name)
         base_rpyc_path = os.path.join(output_dir, f"git_{alias}_base.rpyc")
 
+        # Determine whether scripts use paths prefixed with 'mods/'
+        scripts_use_mods_prefix = False
+        for sfile in meta.script_files:
+            if sfile.endswith(".rpy"):
+                try:
+                    with open(sfile, "r", encoding="utf-8", errors="ignore") as f:
+                        if re.search(r'["\']mods/[^"\']+', f.read()):
+                            scripts_use_mods_prefix = True
+                            break
+                except Exception:
+                    pass
+            elif sfile.endswith(".rpyc"):
+                try:
+                    with open(sfile, "rb") as f:
+                        if b'mods/' in f.read():
+                            scripts_use_mods_prefix = True
+                            break
+                except Exception:
+                    pass
+
+        base_dir_for_assets = meta.source_dir if scripts_use_mods_prefix else meta.inner_mod_dir
+
         # 1. Pack media assets into RPA
         report("Упаковка медиа-ресурсов в RPA архив...", 0.3)
-        temp_asset_dir = os.path.join(output_dir, "_temp_assets")
-        if os.path.exists(temp_asset_dir):
-            shutil.rmtree(temp_asset_dir, ignore_errors=True)
-        os.makedirs(temp_asset_dir, exist_ok=True)
+        files_to_pack = []
+        for asset_path in meta.asset_files:
+            rel = os.path.relpath(asset_path, base_dir_for_assets).replace("\\", "/")
+            files_to_pack.append((rel, asset_path))
 
-        try:
-            # Copy all assets preserving directory structure relative to inner_mod_dir
-            packed_count = 0
-            for asset_path in meta.asset_files:
-                rel = os.path.relpath(asset_path, meta.inner_mod_dir)
-                dest = os.path.join(temp_asset_dir, rel)
-                os.makedirs(os.path.dirname(dest), exist_ok=True)
-                shutil.copy2(asset_path, dest)
-                packed_count += 1
-
-            if packed_count > 0:
-                self.rpa.pack(temp_asset_dir, rpa_out_path, version=3)
+        if files_to_pack:
+            self.rpa.pack(output_rpa_path=rpa_out_path, files_to_pack=files_to_pack, version=3)
+        else:
+            if meta.existing_rpa_files:
+                shutil.copy2(meta.existing_rpa_files[0], rpa_out_path)
             else:
-                # If mod had pre-existing RPA, copy or merge
-                if meta.existing_rpa_files:
-                    shutil.copy2(meta.existing_rpa_files[0], rpa_out_path)
-                else:
-                    # Empty RPA fallback
-                    with open(os.path.join(temp_asset_dir, ".dummy"), "w") as df:
-                        df.write("esgml")
-                    self.rpa.pack(temp_asset_dir, rpa_out_path, version=3)
-        finally:
-            if os.path.exists(temp_asset_dir):
-                shutil.rmtree(temp_asset_dir, ignore_errors=True)
+                dummy_file = os.path.join(output_dir, ".dummy")
+                with open(dummy_file, "w") as df:
+                    df.write("esgml")
+                self.rpa.pack(output_rpa_path=rpa_out_path, files_to_pack=[(".dummy", dummy_file)], version=3)
+                try: os.remove(dummy_file)
+                except Exception: pass
 
         # 2. Generate Loader Script (git_<alias>_base.rpy)
         report("Генерация скрипта загрузчика...", 0.6)
         rpa_archive_id = f"git_{alias}_res"
+        start_label = meta.start_label or alias
         loader_header = f"""# -*- coding: utf-8 -*-
 # Адаптировано для ESGML (Everlasting Summer Git Mods Loader)
 
 init 1 python:
     rpa_check_append('{rpa_filename}', '{rpa_archive_id}')
-    rpa_check_varinst('{alias}', u'{title} ESGML', '{rpa_filename}')
+    rpa_check_varinst('{start_label}', u'{title} ESGML', '{rpa_filename}')
+
+"""
+        if alias != start_label:
+            loader_header += f"""label {alias}:
+    jump {start_label}
 
 """
         # Append existing scripts
