@@ -2,7 +2,9 @@
 *.rpyc
 *.rpyb
 *.rpymc
-*.rpa
+
+# Downloaded mod packages (keep repo resources res_git.rpa & git_screens.rpa tracked)
+git_*_res.rpa
 
 # Ren'Py cache and temp files
 **/cache/
