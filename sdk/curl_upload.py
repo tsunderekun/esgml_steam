@@ -44,7 +44,7 @@ def upload_with_curl(identifier: str, local_filepath: str, remote_name: str, tit
     quoted_name = urllib.parse.quote(remote_name)
     download_url = f"https://archive.org/download/{identifier}/{quoted_name}"
     rem_size = check_remote_size(download_url)
-    if rem_size == file_size:
+    if not remote_name.endswith(".rpyc") and rem_size == file_size:
         print(f"[=] Skipping '{remote_name}' ({size_mb} MB) -> already uploaded & matches on archive.org.")
         return True
 

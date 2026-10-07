@@ -106,6 +106,9 @@ class ModAdapter:
                 rel = f"{prefix_to_prepend}/{rel}"
             files_to_pack.append((rel, asset_path))
 
+        # Inject missing assets / fallbacks to prevent runtime IOError
+        files_to_pack = self._inject_missing_asset_fallbacks(alias, meta, base_dir_for_assets, prefix_to_prepend, files_to_pack, output_dir)
+
         if files_to_pack:
             self.rpa.pack(output_rpa_path=rpa_out_path, files_to_pack=files_to_pack, version=3)
         else:
@@ -125,6 +128,20 @@ class ModAdapter:
         start_label = meta.start_label or alias
         loader_header = f"""# -*- coding: utf-8 -*-
 # Адаптировано для ESGML (Everlasting Summer Git Mods Loader)
+
+init -999 python:
+    try:
+        import renpy.audio.music as _r_music
+        if not getattr(_r_music, '_esgml_patched', False):
+            _orig_m_play = _r_music.play
+            def _safe_m_play(filenames, *args, **kwargs):
+                if filenames is not None and not isinstance(filenames, (basestring if 'basestring' in globals() else (str, bytes), list, tuple)):
+                    return
+                return _orig_m_play(filenames, *args, **kwargs)
+            _r_music.play = _safe_m_play
+            _r_music._esgml_patched = True
+    except Exception:
+        pass
 
 init 1 python:
     rpa_check_append('{rpa_filename}', '{rpa_archive_id}')
@@ -156,14 +173,31 @@ init 1 python:
                             # Auto-fix legacy Ren'Py syntax bugs in old mods:
                             # 1. Invalid play music_list[...] -> play music music_list[...]
                             content = re.sub(r'\bplay\s+music_list\[', r'play music music_list[', content)
-                            # 2. Typos in show statements: 'show mt normal pioneer cleft' -> 'show mt normal pioneer at cleft'
+                            # 2. Typos in show statements:
                             content = re.sub(r'\bshow\s+mt\s+normal\s+pioneer\s+cleft\b', r'show mt normal pioneer at cleft', content)
-                            # 3. Typos in show statements: 'show un shy swim pioneer' -> 'show un shy pioneer'
                             content = re.sub(r'\bshow\s+un\s+shy\s+swim\s+pioneer\b', r'show un shy pioneer', content)
-                            # 4. Typos in show statements: 'show pi smile far' -> 'show pi smile'
                             content = re.sub(r'\bshow\s+pi\s+smile\s+far\b', r'show pi smile', content)
-                            # 5. Russian typo in scene: 'scene bg unyy то with' -> 'scene bg unyy with'
                             content = re.sub(r'\bscene\s+bg\s+unyy\s+то\s+with\b', r'scene bg unyy with', content)
+                            # 3. Typo wuth -> with
+                            content = re.sub(r'\bwuth\b', 'with', content)
+                            # 4. Invalid hat attribute on mt ... panama pioneer
+                            content = re.sub(r'\bshow\s+mt\s+([a-z0-9_]+)\s+panama\s+pioneer\s+hat\b', r'show mt \1 panama pioneer', content)
+                            # 5. Invalid window dissolve attribute
+                            content = re.sub(r'\bshow\s+sh\s+rage\s+window\s+dissolve\b', 'show sh rage with dissolve', content)
+                            # 6. Trailing dots in filenames
+                            content = re.sub(r'plastinki\.ogg\.', 'plastinki.ogg', content)
+                            content = re.sub(r'boris_kukoba_da2\.ogg\.', 'boris_kukoba_da2.ogg', content)
+                            # 7. Audio variable collisions with Character objects
+                            if alias == 'dear_alice_1':
+                                content = re.sub(r'(\$?\s*)miku(\s*=\s*["\']mods/dear_alice/msc-snd/miku_flute\.ogg["\'])', r'\1da_miku_flute\2', content)
+                                content = re.sub(r'\bplay\s+music\s+miku\b', 'play music da_miku_flute', content)
+                            elif alias == 'alternativa':
+                                content = re.sub(r'(\$?\s*)stel(\s*=\s*["\']mods/kurliksukks/sound/02938\.mp3["\'])', r'\1omsk_stel\2', content)
+                                content = re.sub(r'\bplay\s+sound\s+stel\b', 'play sound omsk_stel', content)
+                                content = re.sub(r'mods/kurliksukks/sound/555333\.mp3', 'mods/kurliksukks/sound/555888.mp3', content)
+                            elif alias == 'become_pioneer_rmk':
+                                content = re.sub(r'(\$?\s*)golos(\s*=\s*["\']mods/statpionerom/image/golos\.mp3["\'])', r'\1stat_golos\2', content)
+                                content = re.sub(r'\bplay\s+music\s+golos\b', 'play music stat_golos', content)
 
                             out_rpy.write(f"\n# --- Source: {os.path.basename(script_file)} ---\n")
                             out_rpy.write(content)
@@ -289,3 +323,85 @@ init 1 python:
             f.write(header)
             for _ in range(height):
                 f.write(row)
+
+    def _inject_missing_asset_fallbacks(self, alias, meta, base_dir_for_assets, prefix_to_prepend, files_to_pack, output_dir):
+        """
+        Scans scripts for referenced assets that are missing on disk,
+        and injects known assets (e.g. 18+ CGs) or dummy fallbacks into files_to_pack.
+        """
+        temp_dir = os.path.join(output_dir, "_injected_assets")
+        os.makedirs(temp_dir, exist_ok=True)
+
+        existing_norm = {rel.lower(): (rel, src) for rel, src in files_to_pack}
+
+        # 1. 18+ CGs commonly expected by mods like inoy_mir and bratskoe_leto
+        hentai_cg_dir = r"E:\ANALGAYPORNSTEAM\steamapps\workshop\content\331470\2758131977\mods\ES_18+\cg"
+        if os.path.isdir(hentai_cg_dir):
+            cgs = [
+                ("d2_mt_undressed.jpg", "images/cg/d2_mt_undressed.jpg"),
+                ("d2_mt_undressed.jpg", "cg/d2_mt_undressed.jpg"),
+                ("d2_mt_undressed_2.jpg", "images/cg/d2_mt_undressed_2.jpg"),
+                ("d2_mt_undressed_2.jpg", "cg/d2_mt_undressed_2.jpg"),
+                ("d3_sl_bathhouse.jpg", "images/cg/d3_sl_bathhouse.jpg"),
+                ("d3_sl_bathhouse.jpg", "cg/d3_sl_bathhouse.jpg"),
+            ]
+            for src_cg_name, target_rel in cgs:
+                src_cg_path = os.path.join(hentai_cg_dir, src_cg_name)
+                if os.path.isfile(src_cg_path) and target_rel.lower() not in existing_norm:
+                    files_to_pack.append((target_rel, src_cg_path))
+                    existing_norm[target_rel.lower()] = (target_rel, src_cg_path)
+
+        # 2. Alternativa: 555333.mp3 was misnamed as 555888.mp3 in source
+        if alias == "alternativa":
+            target_rel = "mods/kurliksukks/sound/555333.mp3"
+            if target_rel.lower() not in existing_norm:
+                for rel, src in list(files_to_pack):
+                    if "555888.mp3" in rel:
+                        files_to_pack.append((target_rel, src))
+                        existing_norm[target_rel.lower()] = (target_rel, src)
+                        break
+
+        # 3. Dummy fallbacks for any remaining missing referenced assets
+        silence_src = r"D:\SteamLibrary\steamapps\common\Everlasting Summer\renpy\common\_dl_silence.ogg"
+        has_silence = os.path.isfile(silence_src)
+        dummy_png_bytes = b'\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00\x00\x00\x01\x08\x06\x00\x00\x00\x1f\x15c4\x00\x00\x00\rIDATx\x9cc`\x00\x00\x00\x02\x00\x01H\xaf\xa4q\x00\x00\x00\x00IEND\xaeB`\x82'
+        dummy_mp3_bytes = (b'\xff\xfb\x90\x64' + b'\x00' * 413) * 10
+
+        referenced_assets = set()
+        for sfile in meta.script_files:
+            if sfile.endswith(".rpy"):
+                try:
+                    with open(sfile, "r", encoding="utf-8", errors="ignore") as f:
+                        matches = re.findall(r'["\']((?:mods/|images/)[^"\'\r\n]+\.(?:png|jpg|jpeg|mp3|ogg|wav|webm))["\']', f.read(), re.IGNORECASE)
+                        for m in matches:
+                            clean_m = re.sub(r'<[^>]+>', '', m).strip().replace('\\', '/')
+                            referenced_assets.add(clean_m)
+                except Exception:
+                    pass
+
+        dummy_counter = 0
+        for ref in referenced_assets:
+            if ref.lower() not in existing_norm:
+                ext = os.path.splitext(ref)[1].lower()
+                dummy_counter += 1
+                fallback_file = os.path.join(temp_dir, f"fallback_{dummy_counter}{ext}")
+                if ext in ('.mp3',):
+                    with open(fallback_file, "wb") as fb:
+                        fb.write(dummy_mp3_bytes)
+                elif ext in ('.ogg', '.wav'):
+                    if has_silence:
+                        shutil.copy2(silence_src, fallback_file)
+                    else:
+                        with open(fallback_file, "wb") as fb:
+                            fb.write(dummy_mp3_bytes)
+                elif ext in ('.png', '.jpg', '.jpeg'):
+                    with open(fallback_file, "wb") as fb:
+                        fb.write(dummy_png_bytes)
+                else:
+                    continue
+
+                files_to_pack.append((ref, fallback_file))
+                existing_norm[ref.lower()] = (ref, fallback_file)
+
+        return files_to_pack
+
