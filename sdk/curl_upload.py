@@ -48,7 +48,7 @@ def upload_with_curl(identifier: str, local_filepath: str, remote_name: str, tit
         print(f"[=] Skipping '{remote_name}' ({size_mb} MB) -> already uploaded & matches on archive.org.")
         return True
 
-    print(f"\n[*] Uploading '{remote_name}' ({size_mb} MB) via curl -> {identifier}...")
+    print(f"\n[*] Uploading '{remote_name}' ({size_mb} MB) via curl -> {identifier}...", flush=True)
     url = f"{S3_ENDPOINT}/{identifier}/{quoted_name}"
     safe_title = urllib.parse.quote(title)
 
@@ -57,7 +57,7 @@ def upload_with_curl(identifier: str, local_filepath: str, remote_name: str, tit
         "--resolve", "s3.us.archive.org:443:207.241.225.119",
         "--http1.1",
         "-f",
-        "-s",
+        "--progress-bar",
         "-S",
         "--show-error",
         "-X", "PUT",
@@ -78,15 +78,15 @@ def upload_with_curl(identifier: str, local_filepath: str, remote_name: str, tit
     ]
 
     start_t = time.time()
-    res = subprocess.run(cmd, capture_output=True, text=True)
+    res = subprocess.run(cmd)
     elapsed = round(time.time() - start_t, 1)
 
     if res.returncode == 0:
         speed = round(size_mb / elapsed, 2) if elapsed > 0 else 0
-        print(f"[+] Done: {remote_name} in {elapsed}s (~{speed} MB/s)")
+        print(f"[+] Done: {remote_name} in {elapsed}s (~{speed} MB/s)", flush=True)
         return True
     else:
-        print(f"[-] Curl error ({res.returncode}): {res.stderr}")
+        print(f"[-] Curl error ({res.returncode})", flush=True)
         return False
 
 def main():
