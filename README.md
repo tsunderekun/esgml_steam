@@ -40,6 +40,16 @@
 
 | Мод | Источник / Хостинг | Описание |
 | :--- | :--- | :--- |
+| **Cat Bloody Blues: Extended Cat** *(Восстановлен)* | [Internet Archive](https://archive.org/download/esgml-mod-cbb_ec/) | Культовая расширенная версия CBB (ID 2396824933). Атмосферный хоррор-рут в «Совёнке». |
+| **Дорогая Алиса (Часть 1)** *(Восстановлен)* | [Internet Archive](https://archive.org/download/esgml-mod-dear_alice_1/) | Первая часть известной дилогии (ID 2682369965). Классический романтический рут Алисы. |
+| **Дорогая Алиса 2** *(Восстановлен)* | [Internet Archive](https://archive.org/download/esgml-mod-dear_alice_2/) | Официальное продолжение (ID 3008278992). Масштабная новая глава истории Семёна и Алисы. |
+| **Иной Мир** *(Восстановлен)* | [Internet Archive](https://archive.org/download/esgml-mod-inoy_mir/) | Масштабная мистическая модификация (ID 1270311946). Полная смена в параллельной реальности. |
+| **Иной Мир Alternative** *(Восстановлен)* | [Internet Archive](https://archive.org/download/esgml-mod-inoy_mir_alt/) | Альтернативная ветка популярного мода (ID 1419916523) с новым развитием событий. |
+| **Стать Пионером REMAKE** *(Восстановлен)* | [Internet Archive](https://archive.org/download/esgml-mod-become_pioneer_rmk/) | Колоссальный ремейк (ID 2801507628, 175 тыс. слов) с глубоким драматическим сюжетом. |
+| **Братское лето** *(Восстановлен)* | [Internet Archive](https://archive.org/download/esgml-mod-bratskoe_leto/) | Альтернативная смена (ID 2520468168, 169 тыс. слов) о братстве и испытаниях в лагере. |
+| **Мы - это главное** *(Восстановлен)* | [Internet Archive](https://archive.org/download/esgml-mod-we_are_main/) | Тёплая классическая история 2016 года (ID 743161904), посвящённая дружбе с Ульяной. |
+| **Альтернатива** *(Восстановлен)* | [Internet Archive](https://archive.org/download/esgml-mod-alternativa/) | Запрошенный сообществом мод (ID 1631538437) с уникальными развилками сюжета. |
+| **Пионер из Ривии** *(Восстановлен)* | [Internet Archive](https://archive.org/download/esgml-mod-geralt/) | Знаменитый кроссовер (ID 1795592911): Геральт из Ривии попадает в пионерлагерь «Совёнок». |
 | **Симуляция** *(Восстановлен)* | [Internet Archive](https://archive.org/download/esgml-mod-simulation/) | Культовый глубокий мод (Workshop ID 1173070974), удалённый из Steam. |
 | **Хайповое лето** *(Восстановлен)* | [Internet Archive](https://archive.org/download/esgml-mod-hype-summer/) | Легендарный сюжетный мод (Workshop ID 1122488230). |
 | **История вожатого** *(Восстановлен)* | [Internet Archive](https://archive.org/download/esgml-mod-counselor-story/) | Атмосферная история от лица вожатого (Workshop ID 1199224325). |
