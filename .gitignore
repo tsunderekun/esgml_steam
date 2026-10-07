@@ -2,6 +2,7 @@
 *.rpyc
 *.rpyb
 *.rpymc
+*.rpa
 
 # Ren'Py cache and temp files
 **/cache/

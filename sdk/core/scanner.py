@@ -33,7 +33,8 @@ class ModScanner:
 
     SCRIPT_EXTS = {".rpy", ".rpyc"}
     IMAGE_EXTS = {".png", ".jpg", ".jpeg", ".webp", ".bmp", ".gif", ".tga"}
-    AUDIO_EXTS = {".mp3", ".ogg", ".wav", ".flac", ".opus"}
+    AUDIO_EXTS = {".mp3", ".ogg", ".wav", ".flac", ".opus", ".aiff"}
+    VIDEO_EXTS = {".webm", ".mp4", ".ogv", ".avi", ".mkv"}
     FONT_EXTS = {".ttf", ".otf"}
     PREVIEW_NAMES = {"preview.jpg", "preview.png", "logo.jpg", "logo.png", "превью.jpg", "превью.png", "cover.jpg", "cover.png"}
 
@@ -112,7 +113,7 @@ class ModScanner:
                     scripts.append(fpath)
                 elif ext == ".rpa":
                     rpas.append(fpath)
-                elif ext in cls.IMAGE_EXTS or ext in cls.AUDIO_EXTS or ext in cls.FONT_EXTS:
+                elif ext in cls.IMAGE_EXTS or ext in cls.AUDIO_EXTS or ext in cls.VIDEO_EXTS or ext in cls.FONT_EXTS:
                     assets.append(fpath)
 
                 if file.lower() in cls.PREVIEW_NAMES and fpath not in previews:

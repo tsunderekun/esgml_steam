@@ -173,9 +173,29 @@ class RPAArchive:
                 # Store segment
                 if version == 3:
                     prefix = b""
-                    index[rel_path] = [(offset ^ key, length ^ key, prefix)]
+                    segment = [(offset ^ key, length ^ key, prefix)]
                 else:
-                    index[rel_path] = [(offset ^ key, length ^ key)]
+                    segment = [(offset ^ key, length ^ key)]
+
+                index[rel_path] = segment
+                # Register lowercase and case variations for robust case-insensitive loading
+                index.setdefault(rel_path.lower(), segment)
+                # Register lowercase filename with preserved directory
+                p_dir, p_base = os.path.split(rel_path)
+                if p_dir:
+                    index.setdefault(f"{p_dir}/{p_base.lower()}", segment)
+                    index.setdefault(f"{p_dir.lower()}/{p_base}", segment)
+                # Also if path contains 'Image/' or 'image/', register the other
+                if '/Image/' in rel_path:
+                    alt_img = rel_path.replace('/Image/', '/image/')
+                    index.setdefault(alt_img, segment)
+                    if p_dir:
+                        index.setdefault(f"{p_dir.replace('/Image/', '/image/')}/{p_base.lower()}", segment)
+                elif '/image/' in rel_path:
+                    alt_img = rel_path.replace('/image/', '/Image/')
+                    index.setdefault(alt_img, segment)
+                    if p_dir:
+                        index.setdefault(f"{p_dir.replace('/image/', '/Image/')}/{p_base.lower()}", segment)
 
                 if progress_callback:
                     progress_callback(idx + 1, total, rel_path)

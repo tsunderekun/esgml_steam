@@ -83,11 +83,27 @@ class ModAdapter:
 
         base_dir_for_assets = meta.source_dir if scripts_use_mods_prefix else meta.inner_mod_dir
 
+        # Detect if script references 'mods/<subfolder>/...' but source directory doesn't have 'mods/' folder (e.g. 1631538437 / alternativa)
+        prefix_to_prepend = ""
+        if scripts_use_mods_prefix and not os.path.isdir(os.path.join(meta.source_dir, "mods")):
+            for sfile in meta.script_files:
+                if sfile.endswith(".rpy"):
+                    try:
+                        with open(sfile, "r", encoding="utf-8", errors="ignore") as f:
+                            m = re.search(r'["\'](mods/[^/\'"]+)/', f.read())
+                            if m:
+                                prefix_to_prepend = m.group(1)
+                                break
+                    except Exception:
+                        pass
+
         # 1. Pack media assets into RPA
         report("Упаковка медиа-ресурсов в RPA архив...", 0.3)
         files_to_pack = []
         for asset_path in meta.asset_files:
             rel = os.path.relpath(asset_path, base_dir_for_assets).replace("\\", "/")
+            if prefix_to_prepend:
+                rel = f"{prefix_to_prepend}/{rel}"
             files_to_pack.append((rel, asset_path))
 
         if files_to_pack:
@@ -113,6 +129,11 @@ class ModAdapter:
 init 1 python:
     rpa_check_append('{rpa_filename}', '{rpa_archive_id}')
     rpa_check_varinst('{start_label}', u'{title} ESGML', '{rpa_filename}')
+    for ch in ['soundd', 'avto', 'music2', 'ambience2', 'sound2', 'movie']:
+        try:
+            renpy.music.register_channel(ch, 'voice' if 'ambience' in ch else 'music' if 'music' in ch else 'sound', loop=False)
+        except Exception:
+            pass
 
 """
         if alias != start_label:
@@ -131,6 +152,19 @@ init 1 python:
                             content = in_s.read().replace('\ufeff', '')
                             # Comment out original mods[...] registration to prevent duplicate conflict
                             content = re.sub(r'^[ \t]*(\$?\s*mods\[[^\]]+\]\s*=[^\r\n]*)', r'    # \1', content, flags=re.MULTILINE)
+
+                            # Auto-fix legacy Ren'Py syntax bugs in old mods:
+                            # 1. Invalid play music_list[...] -> play music music_list[...]
+                            content = re.sub(r'\bplay\s+music_list\[', r'play music music_list[', content)
+                            # 2. Typos in show statements: 'show mt normal pioneer cleft' -> 'show mt normal pioneer at cleft'
+                            content = re.sub(r'\bshow\s+mt\s+normal\s+pioneer\s+cleft\b', r'show mt normal pioneer at cleft', content)
+                            # 3. Typos in show statements: 'show un shy swim pioneer' -> 'show un shy pioneer'
+                            content = re.sub(r'\bshow\s+un\s+shy\s+swim\s+pioneer\b', r'show un shy pioneer', content)
+                            # 4. Typos in show statements: 'show pi smile far' -> 'show pi smile'
+                            content = re.sub(r'\bshow\s+pi\s+smile\s+far\b', r'show pi smile', content)
+                            # 5. Russian typo in scene: 'scene bg unyy то with' -> 'scene bg unyy with'
+                            content = re.sub(r'\bscene\s+bg\s+unyy\s+то\s+with\b', r'scene bg unyy with', content)
+
                             out_rpy.write(f"\n# --- Source: {os.path.basename(script_file)} ---\n")
                             out_rpy.write(content)
                             out_rpy.write("\n")
