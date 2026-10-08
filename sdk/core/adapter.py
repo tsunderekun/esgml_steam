@@ -143,9 +143,41 @@ init -999 python:
     except Exception:
         pass
 
+    try:
+        import renpy.exports as _renpy_exp
+        _dis_func = getattr(_renpy_exp, 'Dissolve', None) or globals().get('Dissolve')
+        if _dis_func:
+            for _d_sec in (1, 2, 3, 4, 5, 6, 7, 8, 9, 10):
+                _d_name = 'dissolve%d' % _d_sec
+                if _d_name not in globals():
+                    globals()[_d_name] = _dis_func(float(_d_sec))
+            if 'dissolve_fast' not in globals():
+                globals()['dissolve_fast'] = _dis_func(0.2)
+    except Exception:
+        pass
+
+define -999 dissolve1 = Dissolve(1.0)
+define -999 dissolve2 = Dissolve(2.0)
+define -999 dissolve3 = Dissolve(3.0)
+define -999 dissolve4 = Dissolve(4.0)
+define -999 dissolve5 = Dissolve(5.0)
+define -999 dissolve_fast = Dissolve(0.2)
+define -999 big_dis = Dissolve(5.0)
+define -999 dis = Dissolve(0.5)
+define -999 diss = Dissolve(0.5)
+
 init 1 python:
     rpa_check_append('{rpa_filename}', '{rpa_archive_id}')
     rpa_check_varinst('{start_label}', u'{title} ESGML', '{rpa_filename}')
+    try:
+        for _d_sec in (1, 2, 3, 4, 5, 6, 7, 8, 9, 10):
+            _d_name = 'dissolve%d' % _d_sec
+            if _d_name not in globals() and 'Dissolve' in globals():
+                globals()[_d_name] = Dissolve(float(_d_sec))
+        if 'dissolve_fast' not in globals() and 'Dissolve' in globals():
+            globals()['dissolve_fast'] = Dissolve(0.2)
+    except Exception:
+        pass
     for ch in ['soundd', 'avto', 'music2', 'ambience2', 'sound2', 'movie']:
         try:
             renpy.music.register_channel(ch, 'voice' if 'ambience' in ch else 'music' if 'music' in ch else 'sound', loop=False)
