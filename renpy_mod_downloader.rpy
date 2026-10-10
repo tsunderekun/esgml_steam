@@ -71,6 +71,38 @@ init:
         easein 2 alpha 0
         easein 2 alpha 1.0
 
+    transform git_img_btn_sm():
+        parallel:
+            on idle:
+                easeout_back 0.4 zoom 0.72
+            on hover:
+                easein_back 0.4 zoom 0.88
+            on update:
+                easeout_back 0.4 zoom 0.72
+        parallel:
+            on idle:
+                easein 0.4 alpha 1.0
+            on hover:
+                easein 0.4 alpha 0.65
+            on update:
+                easein 0.4 alpha 1.0
+
+    transform git_img_bar_sm():
+        parallel:
+            on idle:
+                easeout_back 0.4 zoom 0.65
+            on hover:
+                easein_back 0.4 zoom 0.78
+            on update:
+                easeout_back 0.4 zoom 0.65
+        parallel:
+            on idle:
+                easein 0.4 alpha 1.0
+            on hover:
+                easein 0.4 alpha 0.65
+            on update:
+                easein 0.4 alpha 1.0
+
     image git_nfo = "res/git_nfo.png"
     $ nfo_text = ''
     $ m_nfo_text = ''
@@ -137,6 +169,9 @@ init:
     $ style.esgml_bar_btn.selected_color = (255, 226, 125, 255)
     $ style.esgml_bar_btn.selected_hover_color = (255, 245, 180, 255)
     $ style.esgml_bar_btn.outlines = [(1, "#000000bb", 0, 0)]
+
+    $ style.esgml_mod_btn = Style(style.esgml_mm)
+    $ style.esgml_mod_btn.size = 35
 
     $ tindex = ''
     $ git_not = ''
@@ -336,14 +371,18 @@ screen knz_git_dwnl_menu:
 
                     text "|" size 24 color "#555555" yalign 0.5
 
-                    hbox spacing 6 yalign 0.5:
+                    hbox spacing 8 yalign 0.5:
                         textbutton "Поиск":
                             style "esgml_bar_btn"
                             text_style "esgml_bar_btn"
                             action Function(renpy.call_in_new_context, 'esgml_search_input')
+                        textbutton "Сброс":
+                            style "esgml_bar_btn"
+                            text_style "esgml_bar_btn"
+                            action [SetVariable("esgml_search_query", ""), SetField(persistent, "esgml_filter_mode", "all"), SetField(persistent, "esgml_sort_mode", "name_asc")]
 
     side "c r":
-        area (0.05, 0.175, 0.85, 0.70)
+        area (0.05, 0.170, 0.85, 0.745)
         viewport id "git_mods_menu":
             draggable True
             mousewheel True
@@ -352,49 +391,49 @@ screen knz_git_dwnl_menu:
                 null height 50
                 text "Модификации по выбранным критериям не найдены" size 28 color "#888888" xalign 0.5
             for id in _displayed_mods:
-                hbox spacing 14 yalign 0.5:
+                hbox spacing 10 yalign 0.5:
 
                     if str(id) in persistent.git_mod_installed:
-                        add 'res/git_dwl_inactive.png' yalign 0.5
+                        add 'res/git_dwl_inactive.png' yalign 0.5 at git_img_btn_sm
                     else:
-                        imagebutton auto 'res/git_dwl_%s.png' action [Function(generate_index, id), Function(renpy.call_in_new_context, 'run_down2')] at git_img_b yalign 0.5
+                        imagebutton auto 'res/git_dwl_%s.png' action [Function(generate_index, id), Function(renpy.call_in_new_context, 'run_down2')] at git_img_btn_sm yalign 0.5
 
                     if str(id) in persistent.git_mod_installed:
                         if str(id) in git_del_queue:
-                            add 'res/git_qu_inactive.png' yalign 0.5
+                            add 'res/git_qu_inactive.png' yalign 0.5 at git_img_btn_sm
                         else:
-                            imagebutton auto 'res/git_qu_%s.png' action [Function(git_del_queue.append, id), SetVariable("git_not", git_info[id]["name"] + '\nдобавлен в очередь удаления'), Show("git_notice", dissolve)] at git_img_b yalign 0.5
+                            imagebutton auto 'res/git_qu_%s.png' action [Function(git_del_queue.append, id), SetVariable("git_not", git_info[id]["name"] + '\nдобавлен в очередь удаления'), Show("git_notice", dissolve)] at git_img_btn_sm yalign 0.5
                     elif str(id) in git_queue:
-                        add 'res/git_qu_inactive.png' yalign 0.5
+                        add 'res/git_qu_inactive.png' yalign 0.5 at git_img_btn_sm
                     else:
-                        imagebutton auto 'res/git_qu_%s.png' action [Function(git_queue.append, id), SetVariable("git_not", git_info[id]["name"] + '\nдобавлен в очередь загрузки'), Show("git_notice", dissolve)] at git_img_b yalign 0.5
+                        imagebutton auto 'res/git_qu_%s.png' action [Function(git_queue.append, id), SetVariable("git_not", git_info[id]["name"] + '\nдобавлен в очередь загрузки'), Show("git_notice", dissolve)] at git_img_btn_sm yalign 0.5
 
                     if str(id) in persistent.git_mod_installed:
-                        imagebutton auto 'res/git_del_%s.png' action [Function(generate_index, id), Function(renpy.call_in_new_context, 'deleter')] at git_img_b yalign 0.5
+                        imagebutton auto 'res/git_del_%s.png' action [Function(generate_index, id), Function(renpy.call_in_new_context, 'deleter')] at git_img_btn_sm yalign 0.5
                     else:
-                        add 'res/git_del_inactive.png' yalign 0.5
+                        add 'res/git_del_inactive.png' yalign 0.5 at git_img_btn_sm
 
                     textbutton git_info[id]["name"] yalign 0.5 action [Hide("knz_git_dwnl_menu", dissolve), Show('git_modnfo', dissolve, id)] at git_img_b:
-                        style "esgml_mm"
-                        text_style "esgml_mm"
+                        style "esgml_mod_btn"
+                        text_style "esgml_mod_btn"
 
         vbar value YScrollValue("git_mods_menu") style "esgml_vbar"
 
-    frame background Frame(Solid("0008")) left_padding 25 right_padding 25 bottom_padding 20 top_padding 25 xalign 0.5 ypos 0.900 xminimum 1920 xmaximum 1920:
-        grid 6 1 spacing 96 xalign 0.5:
+    frame background Frame(Solid("0008")) left_padding 20 right_padding 20 bottom_padding 8 top_padding 8 xalign 0.5 ypos 0.932 xminimum 1920 xmaximum 1920:
+        grid 6 1 spacing 55 xalign 0.5:
 
-            imagebutton auto 'res/git_main_%s.png' action [SetField(config, "mouse", {'default' : [('images/misc/mouse/1.png', 0, 0)]}), MainMenu(confirm=False)] hovered [SetVariable("git_not1", "Вернуться в главное меню"), Show("git_notice_d", dissolve)] unhovered [SetVariable("git_not1", ""), Hide("git_notice_d", dissolve)] at git_img_b
+            imagebutton auto 'res/git_main_%s.png' action [SetField(config, "mouse", {'default' : [('images/misc/mouse/1.png', 0, 0)]}), MainMenu(confirm=False)] hovered [SetVariable("git_not1", "Вернуться в главное меню"), Show("git_notice_d", dissolve)] unhovered [SetVariable("git_not1", ""), Hide("git_notice_d", dissolve)] at git_img_bar_sm
 
             $ _qu_text = "Очередь: загрузка (" + str(len(git_queue)) + "), удаление (" + str(len(git_del_queue)) + ")" if (git_queue or git_del_queue) else "Очередь"
-            imagebutton auto 'res/git_qu1_%s.png' action [Function(renpy.call_in_new_context, 'go_to_git_qu')] hovered [SetVariable("git_not1", _qu_text), Show("git_notice_d", dissolve)] unhovered [SetVariable("git_not1", ""), Hide("git_notice_d", dissolve)] at git_img_b
+            imagebutton auto 'res/git_qu1_%s.png' action [Function(renpy.call_in_new_context, 'go_to_git_qu')] hovered [SetVariable("git_not1", _qu_text), Show("git_notice_d", dissolve)] unhovered [SetVariable("git_not1", ""), Hide("git_notice_d", dissolve)] at git_img_bar_sm
 
-            imagebutton auto 'res/git_nlt_%s.png' action [Show("git_debug", dissolve)] hovered [SetVariable("git_not1", "Настройки и отладка"), Show("git_notice_d", dissolve)] unhovered [SetVariable("git_not1", ""), Hide("git_notice_d", dissolve)] at git_img_b
+            imagebutton auto 'res/git_nlt_%s.png' action [Show("git_debug", dissolve)] hovered [SetVariable("git_not1", "Настройки и отладка"), Show("git_notice_d", dissolve)] unhovered [SetVariable("git_not1", ""), Hide("git_notice_d", dissolve)] at git_img_bar_sm
 
-            imagebutton auto 'res/git_rst_%s.png' action [Function(renpy.utter_restart)] hovered [SetVariable("git_not1", "Перезагрузить"), Show("git_notice_d", dissolve)] unhovered [SetVariable("git_not1", ""), Hide("git_notice_d", dissolve)] at git_img_b
+            imagebutton auto 'res/git_rst_%s.png' action [Function(renpy.utter_restart)] hovered [SetVariable("git_not1", "Перезагрузить"), Show("git_notice_d", dissolve)] unhovered [SetVariable("git_not1", ""), Hide("git_notice_d", dissolve)] at git_img_bar_sm
 
-            imagebutton auto 'res/git_nfo_%s.png' action [Function(renpy.call_in_new_context, 'go_to_git_authors')] hovered [SetVariable("git_not1", "Информация о моде"), Show("git_notice_d", dissolve)] unhovered [SetVariable("git_not1", ""), Hide("git_notice_d", dissolve)] at git_img_b
+            imagebutton auto 'res/git_nfo_%s.png' action [Function(renpy.call_in_new_context, 'go_to_git_authors')] hovered [SetVariable("git_not1", "Информация о моде"), Show("git_notice_d", dissolve)] unhovered [SetVariable("git_not1", ""), Hide("git_notice_d", dissolve)] at git_img_bar_sm
 
-            imagebutton auto 'res/git_exit_%s.png' action [Quit(confirm=False)] hovered [SetVariable("git_not1", "Выйти из БЛ"), Show("git_notice_d", dissolve)] unhovered [SetVariable("git_not1", ""), Hide("git_notice_d", dissolve)] at git_img_b
+            imagebutton auto 'res/git_exit_%s.png' action [Quit(confirm=False)] hovered [SetVariable("git_not1", "Выйти из БЛ"), Show("git_notice_d", dissolve)] unhovered [SetVariable("git_not1", ""), Hide("git_notice_d", dissolve)] at git_img_bar_sm
 
 
     # default git_not1 = ''
