@@ -141,6 +141,7 @@ class ModAdapter:
         report("Генерация скрипта загрузчика...", 0.6)
         rpa_archive_id = f"git_{alias}_res"
         start_label = custom_start_label or meta.start_label or alias
+        safe_title = title.replace('\\', '\\\\').replace("'", "\\'")
         loader_header = f"""# -*- coding: utf-8 -*-
 # Адаптировано для ESGML (Everlasting Summer Git Mods Loader)
 
@@ -183,7 +184,7 @@ define -999 diss = Dissolve(0.5)
 
 init 1 python:
     rpa_check_append('{rpa_filename}', '{rpa_archive_id}')
-    rpa_check_varinst('{start_label}', u'{title} ESGML', '{rpa_filename}')
+    rpa_check_varinst('{start_label}', u'{safe_title} ESGML', '{rpa_filename}')
     try:
         for _d_sec in (1, 2, 3, 4, 5, 6, 7, 8, 9, 10):
             _d_name = 'dissolve%d' % _d_sec
@@ -210,7 +211,8 @@ init 1 python:
             out_rpy.write(loader_header)
 
             for script_file in meta.script_files:
-                if script_file.endswith(".rpy"):
+                bname = os.path.basename(script_file)
+                if script_file.endswith(".rpy") and not bname.startswith(".") and not bname.startswith("._"):
                     try:
                         with open(script_file, "r", encoding="utf-8", errors="ignore") as in_s:
                             content = in_s.read().replace('\ufeff', '')

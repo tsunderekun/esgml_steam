@@ -97,8 +97,11 @@ class ModScanner:
                 if f_lower in cls.PREVIEW_NAMES:
                     previews.append(fpath)
 
-        for root, _, files in os.walk(abs_path):
+        for root, dirs, files in os.walk(abs_path):
+            dirs[:] = [d for d in dirs if not d.startswith(".") and d != "__MACOSX"]
             for file in files:
+                if file.startswith(".") or file.startswith("._"):
+                    continue
                 fpath = os.path.join(root, file)
                 try:
                     fsize = os.path.getsize(fpath)
