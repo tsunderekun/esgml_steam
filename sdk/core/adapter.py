@@ -28,6 +28,7 @@ class ModAdapter:
         custom_title: Optional[str] = None,
         custom_desc: Optional[str] = None,
         custom_start_label: Optional[str] = None,
+        custom_preview_image: Optional[str] = None,
         progress_callback: Optional[Callable[[str, float], None]] = None
     ) -> Tuple[bool, dict]:
         """
@@ -42,6 +43,9 @@ class ModAdapter:
         meta = ModScanner.scan(mod_source_path)
         if not meta.is_valid_mod:
             return False, {"error": "Папка не содержит распознаваемого мода: " + "; ".join(meta.notes)}
+
+        if custom_preview_image and os.path.isfile(custom_preview_image):
+            meta.preview_image = custom_preview_image
 
         # Resolve alias
         if not alias:
