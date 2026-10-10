@@ -39,3 +39,6 @@ __pycache__/
 *.pyc
 dist/
 scratch_*
+.env
+sdk/build_batch*.py
+sdk/upload_batch*.py

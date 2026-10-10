@@ -10,8 +10,8 @@ import time
 import subprocess
 import urllib.parse
 
-ACCESS_KEY = "YXLMKlSyfHDT60XG"
-SECRET_KEY = "o79r78YXVUaTreSB"
+ACCESS_KEY = os.environ.get("IA_ACCESS_KEY", "")
+SECRET_KEY = os.environ.get("IA_SECRET_KEY", "")
 S3_ENDPOINT = "https://s3.us.archive.org"
 
 MODS = [
