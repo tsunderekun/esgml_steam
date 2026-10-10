@@ -147,10 +147,10 @@ init:
     $ style.esgml_bar_btn = Style(style.default)
     $ style.esgml_bar_btn.font = "res/esgml_new.ttf"
     $ style.esgml_bar_btn.size = 26
-    $ style.esgml_bar_btn.color = (200, 200, 200, 220)
-    $ style.esgml_bar_btn.hover_color = (255, 226, 125, 255)
-    $ style.esgml_bar_btn.selected_color = (255, 226, 125, 255)
-    $ style.esgml_bar_btn.selected_hover_color = (255, 245, 180, 255)
+    $ style.esgml_bar_btn.color = (155, 155, 155, 220)
+    $ style.esgml_bar_btn.hover_color = (215, 215, 215, 255)
+    $ style.esgml_bar_btn.selected_color = (255, 255, 255, 255)
+    $ style.esgml_bar_btn.selected_hover_color = (255, 255, 255, 255)
     $ style.esgml_bar_btn.outlines = [(1, "#000000bb", 0, 0)]
 
     $ style.esgml_mod_btn = Style(style.esgml_mm)
@@ -293,7 +293,7 @@ screen knz_git_dwnl_menu:
 
                 if esgml_search_query:
                     hbox spacing 8 yalign 0.5:
-                        text ("{color=#ffe27d}Поиск: «" + esgml_search_query + "»{/color}") size 24 yalign 0.5
+                        text ("{color=#ffffff}Поиск: «" + esgml_search_query + "»{/color}") size 24 yalign 0.5
                         textbutton "(Сбросить)":
                             style "esgml_bar_btn"
                             text_style "esgml_bar_btn"
