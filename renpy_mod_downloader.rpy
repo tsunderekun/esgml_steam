@@ -274,9 +274,9 @@ screen knz_git_dwnl_menu:
                     yalign 0.5
 
                 if esgml_search_query:
-                    hbox spacing 6 yalign 0.5:
+                    hbox spacing 8 yalign 0.5:
                         text ("{color=#ffe27d}Поиск: «" + esgml_search_query + "»{/color}") size 24 yalign 0.5
-                        textbutton "[✕ Сброс]":
+                        textbutton "(Сбросить)":
                             style "esgml_bar_btn"
                             text_style "esgml_bar_btn"
                             action SetVariable("esgml_search_query", "")
@@ -337,7 +337,7 @@ screen knz_git_dwnl_menu:
                     text "|" size 24 color "#555555" yalign 0.5
 
                     hbox spacing 6 yalign 0.5:
-                        textbutton "🔍 Поиск":
+                        textbutton "Поиск":
                             style "esgml_bar_btn"
                             text_style "esgml_bar_btn"
                             action Function(renpy.call_in_new_context, 'esgml_search_input')
