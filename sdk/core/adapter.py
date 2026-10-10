@@ -214,8 +214,16 @@ init 1 python:
                     try:
                         with open(script_file, "r", encoding="utf-8", errors="ignore") as in_s:
                             content = in_s.read().replace('\ufeff', '')
-                            # Comment out original mods[...] registration to prevent duplicate conflict, adding pass to prevent empty python blocks
-                            content = re.sub(r'^([ \t]*)(\$?\s*mods\[[^\]]+\]\s*=[^\r\n]*)', r'\1# \2\n\1pass', content, flags=re.MULTILINE)
+                            # Comment out original mods[...] registration to prevent duplicate conflict, adding pass only if indented to prevent empty python blocks
+                            def _comment_mods(m):
+                                indent = m.group(1)
+                                line = m.group(2)
+                                if indent:
+                                    return f"{indent}# {line}\n{indent}pass"
+                                else:
+                                    return f"# {line}"
+
+                            content = re.sub(r'^([ \t]*)(\$?[ \t]*mods\s*\[[^\]]+\][ \t]*=[^\r\n]*)', _comment_mods, content, flags=re.MULTILINE)
 
                             # Auto-fix legacy Ren'Py syntax bugs in old mods:
                             # 1. Invalid play music_list[...] -> play music music_list[...]
@@ -245,6 +253,9 @@ init 1 python:
                             elif alias == 'become_pioneer_rmk':
                                 content = re.sub(r'(\$?\s*)golos(\s*=\s*["\']mods/statpionerom/image/golos\.mp3["\'])', r'\1stat_golos\2', content)
                                 content = re.sub(r'\bplay\s+music\s+golos\b', 'play music stat_golos', content)
+                            elif alias == 'serdcebienie':
+                                if os.path.basename(script_file) == 'hb_d2.rpy':
+                                    content = re.sub(r'(?m)^ {10}', '', content)
 
                             out_rpy.write(f"\n# --- Source: {os.path.basename(script_file)} ---\n")
                             out_rpy.write(content)
