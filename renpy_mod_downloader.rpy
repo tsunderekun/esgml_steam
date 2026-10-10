@@ -419,8 +419,8 @@ screen knz_git_dwnl_menu:
 
         vbar value YScrollValue("git_mods_menu") style "esgml_vbar"
 
-    frame background Frame(Solid("0008")) left_padding 20 right_padding 20 bottom_padding 8 top_padding 8 xalign 0.5 ypos 0.932 xminimum 1920 xmaximum 1920:
-        grid 6 1 spacing 55 xalign 0.5:
+    frame background Frame(Solid("0008")) left_padding 20 right_padding 20 bottom_padding 12 top_padding 10 xalign 0.5 yalign 1.0 xminimum 1920 xmaximum 1920:
+        grid 6 1 spacing 55 xalign 0.5 yalign 0.5:
 
             imagebutton auto 'res/git_main_%s.png' action [SetField(config, "mouse", {'default' : [('images/misc/mouse/1.png', 0, 0)]}), MainMenu(confirm=False)] hovered [SetVariable("git_not1", "Вернуться в главное меню"), Show("git_notice_d", dissolve)] unhovered [SetVariable("git_not1", ""), Hide("git_notice_d", dissolve)] at git_img_bar_sm
 
