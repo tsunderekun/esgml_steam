@@ -13,6 +13,16 @@ import urllib.error
 import urllib.parse
 import mimetypes
 
+def _load_env():
+    p = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".env")
+    if os.path.isfile(p):
+        with open(p, "r", encoding="utf-8") as f:
+            for line in f:
+                if "=" in line and not line.strip().startswith("#"):
+                    k, v = line.strip().split("=", 1)
+                    os.environ.setdefault(k.strip(), v.strip())
+_load_env()
+
 ACCESS_KEY = os.environ.get("IA_ACCESS_KEY", "")
 SECRET_KEY = os.environ.get("IA_SECRET_KEY", "")
 S3_ENDPOINT = "https://s3.us.archive.org"
