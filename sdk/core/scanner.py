@@ -158,7 +158,7 @@ class ModScanner:
 
                 # Search mods["..."] = ...
                 # e.g.: mods["sam_start"] = u"{font=...}Саманта{/font}"
-                match = re.search(r'mods\[["\']([^"\']+)["\']\]\s*=\s*([^\r\n]+)', content)
+                match = re.search(r'mods\s*\[["\']([^"\']+)["\']\]\s*=\s*([^\r\n]+)', content)
                 if match:
                     found_label = match.group(1).strip()
                     val = match.group(2).strip()

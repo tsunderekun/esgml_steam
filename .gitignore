@@ -46,3 +46,4 @@ sdk/upload_*.py
 sdk/analyze_*.py
 sdk/find_*.py
 sdk/inspect_*.py
+sdk/print_*.py

@@ -27,6 +27,7 @@ class ModAdapter:
         alias: Optional[str] = None,
         custom_title: Optional[str] = None,
         custom_desc: Optional[str] = None,
+        custom_start_label: Optional[str] = None,
         progress_callback: Optional[Callable[[str, float], None]] = None
     ) -> Tuple[bool, dict]:
         """
@@ -125,7 +126,7 @@ class ModAdapter:
         # 2. Generate Loader Script (git_<alias>_base.rpy)
         report("Генерация скрипта загрузчика...", 0.6)
         rpa_archive_id = f"git_{alias}_res"
-        start_label = meta.start_label or alias
+        start_label = custom_start_label or meta.start_label or alias
         loader_header = f"""# -*- coding: utf-8 -*-
 # Адаптировано для ESGML (Everlasting Summer Git Mods Loader)
 
