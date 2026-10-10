@@ -2,10 +2,16 @@ init python:
     import os as _os
     import threading as _threading
     import traceback as _traceback
+    import ssl as _git_ssl
     try:
         import urllib2 as _git_urllib
     except ImportError:
         import urllib.request as _git_urllib
+
+    try:
+        _git_ssl_ctx = _git_ssl._create_unverified_context()
+    except Exception:
+        _git_ssl_ctx = None
 
     _git_downloading_screens = set()
 
@@ -14,14 +20,24 @@ init python:
 
     def _git_bg_download_screen(url, local_path):
         try:
-            req = _git_urllib.Request(url, headers={'User-Agent': 'Mozilla/5.0 (ESGML/4.1)'})
-            resp = _git_urllib.urlopen(req, timeout=15)
+            req = _git_urllib.Request(str(url), headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36'})
+            if _git_ssl_ctx is not None:
+                try:
+                    resp = _git_urllib.urlopen(req, context=_git_ssl_ctx, timeout=25)
+                except TypeError:
+                    resp = _git_urllib.urlopen(req, timeout=25)
+            else:
+                resp = _git_urllib.urlopen(req, timeout=25)
             data = resp.read()
             tdir = _os.path.dirname(local_path)
             if not _os.path.exists(tdir):
                 _os.makedirs(tdir)
             with open(local_path, 'wb') as fp:
                 fp.write(data)
+            try:
+                renpy.loader.lower_map.clear()
+            except Exception:
+                pass
             try:
                 renpy.loader.cleardirfiles()
             except Exception:
@@ -57,16 +73,26 @@ init python:
         Возвращает проверенный путь к скриншоту либо безопасную заглушку.
         Если передан URL (http/https), в фоне скачивает скриншот с репозитория в кэш!
         """
+        dest = git_get_destination()
+        if dest:
+            dest_norm = _os.path.normpath(dest)
+            if dest_norm not in renpy.config.searchpath:
+                renpy.config.searchpath.append(dest_norm)
+
         if custom_scr:
             if custom_scr.startswith(('http://', 'https://')):
                 ext = '.png'
                 if '.jpg' in custom_scr.lower() or '.jpeg' in custom_scr.lower():
                     ext = '.jpg'
                 rel_cache = 'git_screens/{} ({}){}'.format(id_str, num, ext)
-                dest = git_get_destination()
                 abs_cache = _os.path.normpath(_os.path.join(dest, rel_cache)) if dest else ''
                 if abs_cache and _os.path.isfile(abs_cache):
                     try:
+                        if renpy.loadable(rel_cache):
+                            return rel_cache
+                        renpy.loader.lower_map.clear()
+                        renpy.loader.cleardirfiles()
+                        renpy.loader.loadable_cache.clear()
                         if renpy.loadable(rel_cache):
                             return rel_cache
                     except Exception:

@@ -47,3 +47,8 @@ sdk/analyze_*.py
 sdk/find_*.py
 sdk/inspect_*.py
 sdk/print_*.py
+sdk/sync_*.py
+
+# Mod screenshots cache
+git_screens/*
+!git_screens/README*
