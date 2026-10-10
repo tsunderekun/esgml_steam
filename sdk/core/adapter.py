@@ -327,11 +327,13 @@ init 1 python:
         """Create a 480x270 PNG preview image."""
         try:
             import cv2
+            import numpy as np
             if src_img_path and os.path.isfile(src_img_path):
-                img = cv2.imread(src_img_path)
+                buf = np.fromfile(src_img_path, dtype=np.uint8)
+                img = cv2.imdecode(buf, cv2.IMREAD_COLOR)
                 if img is not None:
                     resized = cv2.resize(img, (480, 270), interpolation=cv2.INTER_AREA)
-                    cv2.imwrite(dest_img_path, resized)
+                    cv2.imencode('.png', resized)[1].tofile(dest_img_path)
                     return
         except Exception:
             pass
