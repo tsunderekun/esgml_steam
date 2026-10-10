@@ -44,24 +44,28 @@ init:
     if persistent.git_mod_installed == None:
         $ persistent.git_mod_installed = []
     transform git_img_b():
-        subpixel True
         parallel:
             on idle:
-                ease 0.22 zoom 1.0
+                easeout_back 0.75 zoom 1.0
             on hover:
-                ease 0.22 zoom 1.25
+                easein_back 0.75 zoom 1.25
+            on update:
+                easeout_back 0.75 zoom 1.0
         parallel:
             on idle:
-                ease 0.22 alpha 1.0
+                easein 0.75 alpha 1.0
             on hover:
-                ease 0.22 alpha 0.7
+                easein 0.75 alpha 0.5
+            on update:
+                easein 0.75 alpha 1.0
 
     transform git_img_c():
-        subpixel True
         on idle:
-            ease 0.25 alpha 1.0
+            easein 0.75 alpha 1.0
         on hover:
-            ease 0.25 alpha 0.65
+            easein 0.75 alpha 0.5
+        on update:
+            easein 0.75 alpha 1.0
 
     transform git_img_u():
         subpixel True
@@ -397,21 +401,21 @@ screen knz_git_dwnl_menu:
 
         vbar value YScrollValue("git_mods_menu") style "esgml_vbar"
 
-    frame background Frame(Solid("0008")) left_padding 20 right_padding 20 bottom_padding 12 top_padding 10 xalign 0.5 yalign 1.0 xminimum 1920 xmaximum 1920:
-        grid 6 1 spacing 96 xalign 0.5 yalign 0.5:
+    frame background Frame(Solid("0008")) left_padding 25 right_padding 25 bottom_padding 20 top_padding 25 xalign 0.5 ypos 0.900 xminimum 1920 xmaximum 1920:
+        grid 6 1 spacing 96 xalign 0.5:
 
-            imagebutton auto 'res/git_main_%s.png' action [SetField(config, "mouse", {'default' : [('images/misc/mouse/1.png', 0, 0)]}), MainMenu(confirm=False)] hovered [SetVariable("git_not1", "Вернуться в главное меню"), Show("git_notice_d")] unhovered [SetVariable("git_not1", ""), Hide("git_notice_d")] at git_img_b
+            imagebutton auto 'res/git_main_%s.png' action [SetField(config, "mouse", {'default' : [('images/misc/mouse/1.png', 0, 0)]}), MainMenu(confirm=False)] hovered [SetVariable("git_not1", "Вернуться в главное меню"), Show("git_notice_d", dissolve)] unhovered [SetVariable("git_not1", ""), Hide("git_notice_d", dissolve)] at git_img_b
 
             $ _qu_text = "Очередь: загрузка (" + str(len(git_queue)) + "), удаление (" + str(len(git_del_queue)) + ")" if (git_queue or git_del_queue) else "Очередь"
-            imagebutton auto 'res/git_qu1_%s.png' action [Function(renpy.call_in_new_context, 'go_to_git_qu')] hovered [SetVariable("git_not1", _qu_text), Show("git_notice_d")] unhovered [SetVariable("git_not1", ""), Hide("git_notice_d")] at git_img_b
+            imagebutton auto 'res/git_qu1_%s.png' action [Function(renpy.call_in_new_context, 'go_to_git_qu')] hovered [SetVariable("git_not1", _qu_text), Show("git_notice_d", dissolve)] unhovered [SetVariable("git_not1", ""), Hide("git_notice_d", dissolve)] at git_img_b
 
-            imagebutton auto 'res/git_nlt_%s.png' action [Show("git_debug", dissolve)] hovered [SetVariable("git_not1", "Настройки и отладка"), Show("git_notice_d")] unhovered [SetVariable("git_not1", ""), Hide("git_notice_d")] at git_img_b
+            imagebutton auto 'res/git_nlt_%s.png' action [Show("git_debug", dissolve)] hovered [SetVariable("git_not1", "Настройки и отладка"), Show("git_notice_d", dissolve)] unhovered [SetVariable("git_not1", ""), Hide("git_notice_d", dissolve)] at git_img_b
 
-            imagebutton auto 'res/git_rst_%s.png' action [Function(renpy.utter_restart)] hovered [SetVariable("git_not1", "Перезагрузить"), Show("git_notice_d")] unhovered [SetVariable("git_not1", ""), Hide("git_notice_d")] at git_img_b
+            imagebutton auto 'res/git_rst_%s.png' action [Function(renpy.utter_restart)] hovered [SetVariable("git_not1", "Перезагрузить"), Show("git_notice_d", dissolve)] unhovered [SetVariable("git_not1", ""), Hide("git_notice_d", dissolve)] at git_img_b
 
-            imagebutton auto 'res/git_nfo_%s.png' action [Function(renpy.call_in_new_context, 'go_to_git_authors')] hovered [SetVariable("git_not1", "Информация о моде"), Show("git_notice_d")] unhovered [SetVariable("git_not1", ""), Hide("git_notice_d")] at git_img_b
+            imagebutton auto 'res/git_nfo_%s.png' action [Function(renpy.call_in_new_context, 'go_to_git_authors')] hovered [SetVariable("git_not1", "Информация о моде"), Show("git_notice_d", dissolve)] unhovered [SetVariable("git_not1", ""), Hide("git_notice_d", dissolve)] at git_img_b
 
-            imagebutton auto 'res/git_exit_%s.png' action [Quit(confirm=False)] hovered [SetVariable("git_not1", "Выйти из БЛ"), Show("git_notice_d")] unhovered [SetVariable("git_not1", ""), Hide("git_notice_d")] at git_img_b
+            imagebutton auto 'res/git_exit_%s.png' action [Quit(confirm=False)] hovered [SetVariable("git_not1", "Выйти из БЛ"), Show("git_notice_d", dissolve)] unhovered [SetVariable("git_not1", ""), Hide("git_notice_d", dissolve)] at git_img_b
 
 
     # default git_not1 = ''
