@@ -40,5 +40,9 @@ __pycache__/
 dist/
 scratch_*
 .env
-sdk/build_batch*.py
-sdk/upload_batch*.py
+sdk/*.json
+sdk/build_*.py
+sdk/upload_*.py
+sdk/analyze_*.py
+sdk/find_*.py
+sdk/inspect_*.py

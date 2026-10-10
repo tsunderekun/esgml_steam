@@ -199,8 +199,8 @@ init 1 python:
                     try:
                         with open(script_file, "r", encoding="utf-8", errors="ignore") as in_s:
                             content = in_s.read().replace('\ufeff', '')
-                            # Comment out original mods[...] registration to prevent duplicate conflict
-                            content = re.sub(r'^[ \t]*(\$?\s*mods\[[^\]]+\]\s*=[^\r\n]*)', r'    # \1', content, flags=re.MULTILINE)
+                            # Comment out original mods[...] registration to prevent duplicate conflict, adding pass to prevent empty python blocks
+                            content = re.sub(r'^([ \t]*)(\$?\s*mods\[[^\]]+\]\s*=[^\r\n]*)', r'\1# \2\n\1pass', content, flags=re.MULTILINE)
 
                             # Auto-fix legacy Ren'Py syntax bugs in old mods:
                             # 1. Invalid play music_list[...] -> play music music_list[...]
