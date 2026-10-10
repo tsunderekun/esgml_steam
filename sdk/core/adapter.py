@@ -172,6 +172,17 @@ init -999 python:
     except Exception:
         pass
 
+    try:
+        if 'Snow' not in globals():
+            def Snow(image, max_particles=90, *args, **kwargs):
+                if 'SnowBlossom' in globals():
+                    return SnowBlossom(image, count=max_particles)
+                elif hasattr(renpy.store, 'SnowBlossom'):
+                    return renpy.store.SnowBlossom(image, count=max_particles)
+                return Null()
+    except Exception:
+        pass
+
 define -999 dissolve1 = Dissolve(1.0)
 define -999 dissolve2 = Dissolve(2.0)
 define -999 dissolve3 = Dissolve(3.0)
