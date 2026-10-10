@@ -132,16 +132,17 @@ init:
     $ style.esgml_mmn = Style(style.esgml_mn)
     $ style.esgml_mmn.size = 80
 
-    $ style.esgml_vbar = Style(style.vbar)
+    $ style.esgml_vbar = Style(style.vscrollbar)
     $ style.esgml_vbar.bar_vertical = True
-    $ style.esgml_vbar.top_bar = Solid("#00000055")
-    $ style.esgml_vbar.bottom_bar = Solid("#00000055")
-    $ style.esgml_vbar.thumb = Solid("#ffe27d88")
-    $ style.esgml_vbar.hover_thumb = Solid("#ffe27dff")
+    $ style.esgml_vbar.bar_invert = True
+    $ style.esgml_vbar.top_bar = Solid("#00000044")
+    $ style.esgml_vbar.bottom_bar = Solid("#00000044")
+    $ style.esgml_vbar.thumb = Solid("#ffffff66")
+    $ style.esgml_vbar.hover_thumb = Solid("#ffffffbb")
     $ style.esgml_vbar.thumb_shadow = None
     $ style.esgml_vbar.thumb_offset = 0
-    $ style.esgml_vbar.xmaximum = 12
-    $ style.esgml_vbar.xminimum = 12
+    $ style.esgml_vbar.xmaximum = 10
+    $ style.esgml_vbar.xminimum = 10
 
     $ style.esgml_bar_btn = Style(style.default)
     $ style.esgml_bar_btn.font = "res/esgml_new.ttf"
