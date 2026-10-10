@@ -364,7 +364,7 @@ screen knz_git_dwnl_menu:
                             action [SetVariable("esgml_search_query", ""), SetField(persistent, "esgml_filter_mode", "all"), SetField(persistent, "esgml_sort_mode", "name_asc")]
 
     side "c r":
-        area (0.05, 0.170, 0.85, 0.745)
+        area (0.05, 0.170, 0.85, 0.710)
         viewport id "git_mods_menu":
             draggable True
             mousewheel True
