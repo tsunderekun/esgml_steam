@@ -107,6 +107,16 @@ class ModAdapter:
                 rel = f"{prefix_to_prepend}/{rel}"
             files_to_pack.append((rel, asset_path))
 
+        # Pack compiled .rpyc files that do not have .rpy sources (e.g. standalone bytecode mods)
+        for sfile in meta.script_files:
+            if sfile.endswith(".rpyc"):
+                base_no_ext = sfile[:-1]
+                if not os.path.exists(base_no_ext):
+                    rel = os.path.relpath(sfile, base_dir_for_assets).replace("\\", "/")
+                    if prefix_to_prepend:
+                        rel = f"{prefix_to_prepend}/{rel}"
+                    files_to_pack.append((rel, sfile))
+
         # Inject missing assets / fallbacks to prevent runtime IOError
         files_to_pack = self._inject_missing_asset_fallbacks(alias, meta, base_dir_for_assets, prefix_to_prepend, files_to_pack, output_dir)
 
