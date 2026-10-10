@@ -129,11 +129,93 @@ init:
     $ style.esgml_vbar.xmaximum = 12
     $ style.esgml_vbar.xminimum = 12
 
+    $ style.esgml_bar_btn = Style(style.default)
+    $ style.esgml_bar_btn.font = "res/esgml_new.ttf"
+    $ style.esgml_bar_btn.size = 26
+    $ style.esgml_bar_btn.color = (200, 200, 200, 220)
+    $ style.esgml_bar_btn.hover_color = (255, 226, 125, 255)
+    $ style.esgml_bar_btn.selected_color = (255, 226, 125, 255)
+    $ style.esgml_bar_btn.selected_hover_color = (255, 245, 180, 255)
+    $ style.esgml_bar_btn.outlines = [(1, "#000000bb", 0, 0)]
+
     $ tindex = ''
     $ git_not = ''
     $ git_not1 = ''
     $ global tindex
 
+init python:
+    import re as _esgml_re
+
+    if getattr(persistent, "esgml_sort_mode", None) is None:
+        persistent.esgml_sort_mode = "name_asc"
+    if getattr(persistent, "esgml_filter_mode", None) is None:
+        persistent.esgml_filter_mode = "all"
+    esgml_search_query = ""
+
+    def _esgml_clean_str(s):
+        if not s:
+            return u""
+        if isinstance(s, str):
+            try:
+                s = s.decode("utf-8", "ignore")
+            except Exception:
+                s = unicode(s)
+        elif not isinstance(s, unicode):
+            s = unicode(s)
+        return _esgml_re.sub(r'\{[^\}]+\}', '', s).strip().lower()
+
+    def esgml_get_counts():
+        global git_mod_lists, persistent
+        installed_set = set(str(x) for x in (getattr(persistent, "git_mod_installed", []) or []))
+        total = len(git_mod_lists)
+        installed = sum(1 for m in git_mod_lists if str(m) in installed_set)
+        available = total - installed
+        return total, installed, available
+
+    def git_get_filtered_sorted_mods():
+        global git_mod_lists, git_info, persistent, esgml_search_query
+        installed_set = set(str(x) for x in (getattr(persistent, "git_mod_installed", []) or []))
+        flt = getattr(persistent, "esgml_filter_mode", "all")
+        sort_m = getattr(persistent, "esgml_sort_mode", "name_asc")
+        q = _esgml_clean_str(esgml_search_query)
+
+        result = []
+        for mid in git_mod_lists:
+            mid_str = str(mid)
+            is_inst = mid_str in installed_set
+
+            if flt == "installed" and not is_inst:
+                continue
+            elif flt == "available" and is_inst:
+                continue
+
+            if q:
+                minfo = git_info.get(mid, {})
+                m_name = _esgml_clean_str(minfo.get("name", ""))
+                m_desc = _esgml_clean_str(minfo.get("desc", ""))
+                m_id = _esgml_clean_str(mid_str)
+                if q not in m_name and q not in m_desc and q not in m_id:
+                    continue
+
+            result.append(mid)
+
+        if sort_m == "name_asc":
+            result.sort(key=lambda m: _esgml_clean_str(git_info.get(m, {}).get("name", m)))
+        elif sort_m == "name_desc":
+            result.sort(key=lambda m: _esgml_clean_str(git_info.get(m, {}).get("name", m)), reverse=True)
+        elif sort_m == "installed_first":
+            result.sort(key=lambda m: (0 if str(m) in installed_set else 1, _esgml_clean_str(git_info.get(m, {}).get("name", m))))
+        elif sort_m == "default":
+            pass
+
+        return result
+
+label esgml_search_input:
+    python:
+        _cur_s = esgml_search_query if esgml_search_query else ""
+        _in_val = renpy.input(u"Поиск по названию или описанию мода (Enter для подтверждения):", default=_cur_s, length=40)
+        esgml_search_query = _in_val.strip() if _in_val else ""
+    return
 
 label knz_dwnl_git:
     window hide
@@ -173,24 +255,103 @@ screen knz_git_dwnl_menu:
     $ import urlparse
     modal False
 
+    $ _cnt_tot, _cnt_inst, _cnt_avail = esgml_get_counts()
+    $ _displayed_mods = git_get_filtered_sorted_mods()
+
     window:
         xalign 0 yalign 0
         background "git_nfo"
-        vbox xpos 0.05 ypos 0.175 yfill:
+        vbox xpos 0.05 ypos 0.02:
 
             text "Everlasting Summer Git Mods Loader":
-                        style "esgml_mmn"
-            null height 10
-            $ _mod_count_str = " (Всего: " + str(len(git_mod_lists)) + ")" if git_mod_lists else ""
-            text ("Свободный репозиторий модов «Бесконечного лета»" + _mod_count_str):
-                        style "esgml_mn"
+                style "esgml_mmn"
+                size 48
+
+            hbox spacing 14 yalign 0.5:
+                text ("Каталог модов (" + str(len(_displayed_mods)) + " из " + str(_cnt_tot) + "):"):
+                    style "esgml_mn"
+                    size 26
+                    yalign 0.5
+
+                if esgml_search_query:
+                    hbox spacing 6 yalign 0.5:
+                        text ("{color=#ffe27d}Поиск: «" + esgml_search_query + "»{/color}") size 24 yalign 0.5
+                        textbutton "[✕ Сброс]":
+                            style "esgml_bar_btn"
+                            text_style "esgml_bar_btn"
+                            action SetVariable("esgml_search_query", "")
+                            yalign 0.5
+
+            null height 6
+
+            frame:
+                background Frame(Solid("#00000077"))
+                left_padding 14
+                right_padding 14
+                top_padding 6
+                bottom_padding 6
+                hbox spacing 18 yalign 0.5:
+                    hbox spacing 8 yalign 0.5:
+                        text "Фильтр:" size 24 color "#aaaaaa" yalign 0.5
+                        textbutton ("Все (" + str(_cnt_tot) + ")"):
+                            style "esgml_bar_btn"
+                            text_style "esgml_bar_btn"
+                            action SetField(persistent, "esgml_filter_mode", "all")
+                            selected (persistent.esgml_filter_mode == "all")
+                        textbutton ("Установленные (" + str(_cnt_inst) + ")"):
+                            style "esgml_bar_btn"
+                            text_style "esgml_bar_btn"
+                            action SetField(persistent, "esgml_filter_mode", "installed")
+                            selected (persistent.esgml_filter_mode == "installed")
+                        textbutton ("Доступные (" + str(_cnt_avail) + ")"):
+                            style "esgml_bar_btn"
+                            text_style "esgml_bar_btn"
+                            action SetField(persistent, "esgml_filter_mode", "available")
+                            selected (persistent.esgml_filter_mode == "available")
+
+                    text "|" size 24 color "#555555" yalign 0.5
+
+                    hbox spacing 8 yalign 0.5:
+                        text "Сортировка:" size 24 color "#aaaaaa" yalign 0.5
+                        textbutton "А-Я":
+                            style "esgml_bar_btn"
+                            text_style "esgml_bar_btn"
+                            action SetField(persistent, "esgml_sort_mode", "name_asc")
+                            selected (persistent.esgml_sort_mode == "name_asc")
+                        textbutton "Я-А":
+                            style "esgml_bar_btn"
+                            text_style "esgml_bar_btn"
+                            action SetField(persistent, "esgml_sort_mode", "name_desc")
+                            selected (persistent.esgml_sort_mode == "name_desc")
+                        textbutton "Установленные":
+                            style "esgml_bar_btn"
+                            text_style "esgml_bar_btn"
+                            action SetField(persistent, "esgml_sort_mode", "installed_first")
+                            selected (persistent.esgml_sort_mode == "installed_first")
+                        textbutton "По умолчанию":
+                            style "esgml_bar_btn"
+                            text_style "esgml_bar_btn"
+                            action SetField(persistent, "esgml_sort_mode", "default")
+                            selected (persistent.esgml_sort_mode == "default")
+
+                    text "|" size 24 color "#555555" yalign 0.5
+
+                    hbox spacing 6 yalign 0.5:
+                        textbutton "🔍 Поиск":
+                            style "esgml_bar_btn"
+                            text_style "esgml_bar_btn"
+                            action Function(renpy.call_in_new_context, 'esgml_search_input')
+
     side "c r":
-        area (0.05, 0.20, 0.85, 0.675)
+        area (0.05, 0.175, 0.85, 0.70)
         viewport id "git_mods_menu":
             draggable True
             mousewheel True
             has vbox
-            for id in git_mod_lists:
+            if not _displayed_mods:
+                null height 50
+                text "Модификации по выбранным критериям не найдены" size 28 color "#888888" xalign 0.5
+            for id in _displayed_mods:
                 hbox spacing 14 yalign 0.5:
 
                     if str(id) in persistent.git_mod_installed:
