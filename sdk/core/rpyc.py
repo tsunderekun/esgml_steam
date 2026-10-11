@@ -205,7 +205,7 @@ with open(sys.argv[2], 'w') as out:
             import shutil
             shutil.copy2(rpy_path, tmp_rpy)
 
-            cmd = [self.renpy_python_path, "Everlasting Summer.py", ".", "compile"]
+            cmd = [self.renpy_python_path, "Everlasting Summer.py", "--keep-orphan-rpyc", ".", "compile"]
             res = subprocess.run(cmd, cwd=self.game_dir, capture_output=True, text=True, timeout=60)
 
             if os.path.isfile(tmp_rpyc):
