@@ -205,12 +205,13 @@ init 1 python:
             globals()['dissolve_fast'] = Dissolve(0.2)
     except Exception:
         pass
-    for ch in ['soundd', 'avto', 'music2', 'ambience2', 'sound2', 'movie']:
+    for ch in ['soundd', 'avto', 'music2', 'ambience2', 'sound2', 'movie', 'sounf', 'sfx']:
         try:
             renpy.music.register_channel(ch, 'voice' if 'ambience' in ch else 'music' if 'music' in ch else 'sound', loop=False)
         except Exception:
             pass
-
+    if 'v' not in globals() and 'dv' in globals():
+        v = dv
 """
         if alias != start_label:
             loader_header += f"""label {alias}:
@@ -261,6 +262,18 @@ init 1 python:
                                 r'\1try:\n\1    if \2 in renpy.display.image.image_attributes:\n\1        _attrs_c = renpy.display.image.image_attributes[\2]\n\1        if isinstance(_attrs_c, dict):\n\1            _attrs_c.pop(\3, None)\n\1        elif hasattr(_attrs_c, "remove") and hasattr(_attrs_c, "count"):\n\1            while _attrs_c.count(\3) != 0:\n\1                _attrs_c.remove(\3)\n\1except Exception:\n\1    pass',
                                 content
                             )
+                            # 8. Sayer 'v' typo -> 'dv' (Alisa)
+                            content = re.sub(r'(?m)^([ \t]*)v([\"\'])', r'\1dv\2', content)
+                            # 9. Typo 'ar <pos>' -> 'at <pos>'
+                            _common_pos = r'cleft|cright|fleft|fright|left|right|center|truecenter'
+                            content = re.sub(rf'\bar\s+({_common_pos})\b', r'at \1', content)
+                            # 10. Missing 'at' before position keyword: show <tag> <attrs> <pos> with -> show <tag> <attrs> at <pos> with
+                            content = re.sub(rf'(?m)^([ \t]*show\s+[^\n#]+?)(?<!\bat)\s+({_common_pos})\s+with\b', r'\1 at \2 with', content)
+                            # 11. Missing 'with' before transition: show <tag> <attrs> (dspr|dissolve|fade)
+                            _common_trans = r'dspr|dissolve|fade|dissolve_fast|big_dis|dis|diss'
+                            content = re.sub(rf'(?m)^([ \t]*show\s+[^\n#]+?)(?<!\bwith)\s+({_common_trans})\s*$', r'\1 with \2', content)
+                            # 12. Audio channel typos: play sounf / play sfx -> play sound
+                            content = re.sub(r'\bplay\s+(?:sounf|sfx)\b', 'play sound', content)
                             # 7. Audio variable collisions with Character objects
                             if alias == 'dear_alice_1':
                                 content = re.sub(r'(\$?\s*)miku(\s*=\s*["\']mods/dear_alice/msc-snd/miku_flute\.ogg["\'])', r'\1da_miku_flute\2', content)

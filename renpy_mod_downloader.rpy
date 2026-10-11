@@ -37,7 +37,7 @@ init:
             mods["knz_dwnl_git"] = u"{font=res/esgml_new.ttf}Everlasting Summer GitHub Mods Loader{/font}"
         except Exception:
             pass
-    $ esgml_ver = '4.1'
+    $ esgml_ver = '4.2'
     $ ch_pr = ''
     $ ready_ma = False
     $ ready_m = False
@@ -718,7 +718,7 @@ screen git_authors:
         text "Авторы:" xpos 0.025:
             style "esgml_nm"
 
-        textbutton "Илья Кунц {i}aka Phos{/i}" xpos 0.05 action OpenURL('https://vk.com/id327507103') at git_img_b:
+        textbutton "Илья Кунц {i}aka Kunetsky{/i}" xpos 0.05 action OpenURL('https://vk.com/id327507103') at git_img_b:
             style "esgml_nm"
             text_style "esgml_nm"
 

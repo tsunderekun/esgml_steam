@@ -1,4 +1,4 @@
-# ESGML (Everlasting Summer Git Mods Loader) v4.1
+# ESGML (Everlasting Summer Git Mods Loader) v4.2
 ## Полное руководство по архитектуре, портированию модов и SDK
 
 ---
@@ -11,7 +11,7 @@
 
 ---
 
-## 2. Архитектура загрузчика ESGML v4.1
+## 2. Архитектура загрузчика ESGML v4.2
 
 ### 2.1. Порядок инициализации (Init Order)
 В Ren'Py порядок выполнения блоков `init` критически важен. В ESGML выстроена строгая иерархия:
