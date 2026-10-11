@@ -446,6 +446,15 @@ init 1 python:
         dummy_png_bytes = b'\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00\x00\x00\x01\x08\x06\x00\x00\x00\x1f\x15c4\x00\x00\x00\rIDATx\x9cc`\x00\x00\x00\x02\x00\x01H\xaf\xa4q\x00\x00\x00\x00IEND\xaeB`\x82'
         dummy_mp3_bytes = (b'\xff\xfb\x90\x64' + b'\x00' * 413) * 10
 
+        # Never inject dummy fallbacks for assets that already exist in the base game
+        base_assets_set = set()
+        game_archive = r"D:\SteamLibrary\steamapps\common\Everlasting Summer\game\archive.rpa"
+        if os.path.isfile(game_archive):
+            try:
+                base_assets_set = set(k.lower() for k in RPAArchive().list_files(game_archive))
+            except Exception:
+                pass
+
         referenced_assets = set()
         for sfile in meta.script_files:
             if sfile.endswith(".rpy"):
@@ -460,7 +469,8 @@ init 1 python:
 
         dummy_counter = 0
         for ref in referenced_assets:
-            if ref.lower() not in existing_norm:
+            ref_lower = ref.lower()
+            if ref_lower not in existing_norm and ref_lower not in base_assets_set:
                 ext = os.path.splitext(ref)[1].lower()
                 dummy_counter += 1
                 fallback_file = os.path.join(temp_dir, f"fallback_{dummy_counter}{ext}")
