@@ -182,8 +182,35 @@ init python:
             s = unicode(s)
         return _esgml_re.sub(r'\{[^\}]+\}', '', s).strip().lower()
 
+    def esgml_sync_installed_mods():
+        global git_destination, git_mod_lists, persistent
+        try:
+            d = getattr(renpy.store, 'git_destination', None) or globals().get('git_destination')
+            if not d or not git_os.path.exists(d):
+                return
+            cur_installed = list(getattr(persistent, "git_mod_installed", []) or [])
+            valid = []
+            for mid in cur_installed:
+                m_str = str(mid)
+                rpa_path = git_os.path.join(d, "git_{}_res.rpa".format(m_str))
+                rpyc_dir = git_os.path.join(d, m_str)
+                if git_os.path.isfile(rpa_path) or git_os.path.isdir(rpyc_dir):
+                    valid.append(mid)
+            if hasattr(renpy.store, 'git_mod_lists'):
+                for mid in renpy.store.git_mod_lists:
+                    if mid not in valid:
+                        m_str = str(mid)
+                        rpa_path = git_os.path.join(d, "git_{}_res.rpa".format(m_str))
+                        rpyc_dir = git_os.path.join(d, m_str)
+                        if git_os.path.isfile(rpa_path) or git_os.path.isdir(rpyc_dir):
+                            valid.append(mid)
+            persistent.git_mod_installed = valid
+        except Exception:
+            pass
+
     def esgml_get_counts():
         global git_mod_lists, persistent
+        esgml_sync_installed_mods()
         installed_set = set(str(x) for x in (getattr(persistent, "git_mod_installed", []) or []))
         total = len(git_mod_lists)
         installed = sum(1 for m in git_mod_lists if str(m) in installed_set)
