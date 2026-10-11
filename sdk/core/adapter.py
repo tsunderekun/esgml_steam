@@ -255,6 +255,12 @@ init 1 python:
                             # 6. Trailing dots in filenames
                             content = re.sub(r'plastinki\.ogg\.', 'plastinki.ogg', content)
                             content = re.sub(r'boris_kukoba_da2\.ogg\.', 'boris_kukoba_da2.ogg', content)
+                            # 7. Ren'Py 6 -> 7 incompatibility: renpy.display.image.image_attributes[a[0]].count(a[1:])
+                            content = re.sub(
+                                r'([ \t]*)while\s+renpy\.display\.image\.image_attributes\[([^\]]+)\]\.count\(([^)]+)\)\s*!=\s*0:\s*\r?\n[ \t]*renpy\.display\.image\.image_attributes\[\2\]\.remove\(\3\)',
+                                r'\1try:\n\1    if \2 in renpy.display.image.image_attributes:\n\1        _attrs_c = renpy.display.image.image_attributes[\2]\n\1        if isinstance(_attrs_c, dict):\n\1            _attrs_c.pop(\3, None)\n\1        elif hasattr(_attrs_c, "remove") and hasattr(_attrs_c, "count"):\n\1            while _attrs_c.count(\3) != 0:\n\1                _attrs_c.remove(\3)\n\1except Exception:\n\1    pass',
+                                content
+                            )
                             # 7. Audio variable collisions with Character objects
                             if alias == 'dear_alice_1':
                                 content = re.sub(r'(\$?\s*)miku(\s*=\s*["\']mods/dear_alice/msc-snd/miku_flute\.ogg["\'])', r'\1da_miku_flute\2', content)
